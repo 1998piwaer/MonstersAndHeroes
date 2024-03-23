@@ -1,0 +1,16 @@
+How to implement Input as a Observer pattern?
+    (I need to tell all running instances to exit, is this better than simply a bunch of returns?
+    How would you even implement that?)
+
+Should I add a Grid class that contains a HeroParty & SpaceFactory?
+    From what I can tell it just adds overhead and messies up code
+    as we can simply keep track where HeroParty is through HeroParty
+    and handle logic as necessary, only concern is that a Board does contain
+    a HeroParty, so tehcnically should be added.
+        Same with board
+
+Party.java
+    I tried using generic types but Party contains a list of heroes. How and should I implement it with generic types?
+
+Settings.java
+    How do I ensure space proportions add up to one?
