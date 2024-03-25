@@ -26,11 +26,7 @@ public class MainMenu {
                 }
                 game.initalize();
                 if (input.isQuit()) {
-                    // TO DO
-                }
-                // Replace this portion with any game of your choosing
-                if (gameSelection == 0) {
-                    game = new MonstersAndHeroes();
+                    // TODO
                 }
                 game.playGame();
             }

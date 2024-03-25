@@ -26,7 +26,7 @@ public class Input {
         String s = "";
         boolean valid = false;
         while (!valid) {
-            s = input.next();
+            s = input.nextLine();
             if (s.toLowerCase().equals("t") || s.toLowerCase().equals("true")) {
                 valid = true;
                 return true;
@@ -127,17 +127,16 @@ public class Input {
         String s = "";
         boolean valid = false;
         while (!valid) {
-            s = input.nextLine();
-            if (s.toLowerCase().equals("quit")) {
-                quit = true;
-                return "quit";
-            }
-            if (!hs.contains(s)) {
-                hs.add(s);
+            s = input.nextLine().toLowerCase();
+            // consume newline character
+            if (hs.contains(s)) {
                 valid = true;
             } else {
-                printNoDuplicatesError();
+                printNotInValidError();
             }
+        }
+        if (s.equals("q")) {
+            quit = true;
         }
         return s;
     }

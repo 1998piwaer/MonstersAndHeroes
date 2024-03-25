@@ -14,3 +14,9 @@ Party.java
 
 Settings.java
     How do I ensure space proportions add up to one?
+
+Is SpaceFactory a factory??
+
+What is difference between abstract factory and normal factory?
+
+Can armor extend item rather than implement? Does this break factory model?

@@ -26,4 +26,12 @@ public class Board {
     public Grid getGrid(int r, int c) {
         return board[r][c];
     }
+
+    public int getRows() {
+        return board.length;
+    }
+
+    public int getCols() {
+        return board[0].length;
+    }
 }
