@@ -34,4 +34,8 @@ public abstract class Entity {
     public int getAgility() {
         return agility;
     }
+    
+    public CombatBehavior getCombatBehavior() {
+        return cb;
+    }
 }

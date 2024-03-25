@@ -20,3 +20,5 @@ Is SpaceFactory a factory??
 What is difference between abstract factory and normal factory?
 
 Can armor extend item rather than implement? Does this break factory model?
+
+Should a space and combat take in a instance of heroParty or have a singleton heroParty?

@@ -1,5 +1,5 @@
 public interface SpaceFactory {
-    void enter();
-    void interact();
+    void enter(HeroParty heroParty);
+    void interact(HeroParty heroParty);
     int getSpaceType();
 }

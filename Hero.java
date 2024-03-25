@@ -11,7 +11,8 @@ public class Hero extends Entity {
     private int mana;
     private int gold;
     private int exp;
-    
+    private int health;
+    private int level;
 
     public Hero(String name, int mana, int strength, int agility, int dexterity, int gold, int exp, CombatBehavior cb) {
         super(name, strength, agility, DEFAULT_DEFENSE, cb);
@@ -19,6 +20,8 @@ public class Hero extends Entity {
         this.dexterity = dexterity;
         this.gold = gold;
         this.exp = exp;
+        this.level = 1;
+        this.health = level * 100;
     }
 
     public int getDexterity() {
@@ -35,6 +38,21 @@ public class Hero extends Entity {
 
     public int getExp() {
         return exp;
+    }
+
+    public void takeDamage(int dmg) {
+        health -= dmg;
+        if (health < 0) {
+            health = 0;
+        }
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public boolean isFainted() {
+        return health <= 0;
     }
 
     // Funcntion with assistance from Claude.Ai (regarding parsing from file)

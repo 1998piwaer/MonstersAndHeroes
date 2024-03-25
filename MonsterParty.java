@@ -17,7 +17,19 @@ public class MonsterParty {
         }
     }
 
-    public void addPartyMember(Monster monster) {
-        party.add(monster);
+    public List<Monster> getMonsterParty() {
+        return party;
+    }
+
+    public void printMonsterParty() {
+        for (int i = 0; i < party.size(); i++) {
+            Monster currMonster = party.get(i);
+            System.out.println(currMonster.getName() + " [" + i + "]: HP = " + currMonster.getHealth());
+        }
+        
+    }
+
+    public int size() {
+        return party.size();
     }
 }

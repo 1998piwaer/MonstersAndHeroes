@@ -4,10 +4,10 @@ public class MarketSpace implements SpaceFactory {
     public MarketSpace() {
         market = new Market();
     }
-    public void enter() {
+    public void enter(HeroParty heroParty) {
 
     }
-    public void interact() {
+    public void interact(HeroParty heroParty) {
         market.displayItems();
     }
     public int getSpaceType() {

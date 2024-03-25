@@ -7,9 +7,11 @@ import java.util.Random;
 
 public class Monster extends Entity {
     private int level;
+    private int health;
     public Monster(String name, int level, int strength, int defense, int agility, CombatBehavior cb) {
         super(name, strength, agility, defense, cb);
         this.level = level;
+        this.health = this.level * 100;
     }
 
     public static Monster createRandomMonsterFromFile(CombatBehavior cb) {
@@ -24,6 +26,7 @@ public class Monster extends Entity {
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            br.readLine();
             String line;
             while ((line = br.readLine()) != null) {
                 monsters.add(line);
@@ -47,5 +50,20 @@ public class Monster extends Entity {
         int dodgeChance = Integer.parseInt(data[4]);
 
         return new Monster(name, level, damage, defense, dodgeChance, cb);
+    }
+
+    public void takeDamage(int damage) {
+        health -= damage;
+        if (health < 0) {
+            health = 0;
+        }
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public boolean isFainted() {
+        return health <= 0;
     }
 }

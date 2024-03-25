@@ -53,7 +53,7 @@ public class MonstersAndHeroes implements Playable {
                         if (valid) {
                             int currR = playerParty.getHeroPartyRow();
                             int currC = playerParty.getHeroPartyCol();
-                            board.getGrid(currR, currC).getSpace().enter();
+                            board.getGrid(currR, currC).getSpace().enter(playerParty);
                         }
                     } else if (action.equals("i")) {
                         valid = true;
@@ -61,7 +61,7 @@ public class MonstersAndHeroes implements Playable {
                     } else if (action.equals("m")) {
                         int currR = playerParty.getHeroPartyRow();
                         int currC = playerParty.getHeroPartyCol();
-                        board.getGrid(currR, currC).getSpace().interact();
+                        board.getGrid(currR, currC).getSpace().interact(playerParty);
                         valid = true;
                     }
                 } while (!valid);
