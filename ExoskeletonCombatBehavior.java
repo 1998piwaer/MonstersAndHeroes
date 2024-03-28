@@ -8,16 +8,21 @@ public class ExoskeletonCombatBehavior implements CombatBehavior {
         return dmg;
     }
 
-    public int tankAttack(int dmg) {
+    public int tank(int dmg, int defense, double dodgeChance) {
         double roll = Math.random();
-        if (roll < Settings.BASE_DODGE_CHANCE) {
+        if (roll < dodgeChance) {
+            System.out.println("The monster managed to dodge the attack!");
             return 0;
         } else {
-            return (int) (dmg / Settings.AFFINITY_MULTIPLIER);
+            return (int) (dmg / Settings.AFFINITY_MULTIPLIER) > 0 ? (int) (dmg / Settings.AFFINITY_MULTIPLIER) : 0;
         }
     }
 
-    public int tankSpell(int dmg) {
-        return (int) (dmg / Settings.AFFINITY_MULTIPLIER);
+    public String getType() {
+        return "Exoskeleton";
+    }
+
+    public void applyLevelUpBonus(Hero hero) {
+        System.out.println("[Debug]: Monsters can't level up! This shouldn't be printing");
     }
 }

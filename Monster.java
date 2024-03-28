@@ -6,12 +6,32 @@ import java.util.List;
 import java.util.Random;
 
 public class Monster extends Entity {
+    private int attackDamage;
     private int level;
     private int health;
-    public Monster(String name, int level, int strength, int defense, int agility, CombatBehavior cb) {
-        super(name, strength, agility, defense, cb);
+    private int dodgeChance;
+    public Monster(String name, int level, int attackDamage, int defense, int dodgeChance, CombatBehavior cb) {
+        super(name, defense, cb);
+        this.attackDamage = attackDamage;
         this.level = level;
+        this.dodgeChance = dodgeChance;
         this.health = this.level * 100;
+    }
+
+    public void tankFire() {
+        defense *= 0.8;
+    }
+
+    public void tankLightning() {
+        dodgeChance *= 0.8;
+    }
+
+    public void tankIce() {
+        attackDamage *= 0.8;
+    }
+
+    public int getAttackDamage() {
+        return attackDamage;
     }
 
     public static Monster createRandomMonsterFromFile(CombatBehavior cb) {
@@ -57,6 +77,14 @@ public class Monster extends Entity {
         if (health < 0) {
             health = 0;
         }
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public int getDodgeChance() {
+        return dodgeChance;
     }
 
     public int getHealth() {

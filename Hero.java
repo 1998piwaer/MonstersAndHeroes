@@ -5,27 +5,115 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.w3c.dom.Attr;
+
 public class Hero extends Entity {
     private static final int DEFAULT_DEFENSE = 500;
-    private int dexterity;
+    private Attribute strength;
+    private Attribute dexterity;
+    private Attribute agility;
     private int mana;
     private int gold;
     private int exp;
     private int health;
+    private Attribute maxHealth;
+    private Attribute maxMana;
     private int level;
+    private Armor armor;
+    private Weapon weapon;
+    private int hands;
+    private List<Item> inventory;
 
     public Hero(String name, int mana, int strength, int agility, int dexterity, int gold, int exp, CombatBehavior cb) {
-        super(name, strength, agility, DEFAULT_DEFENSE, cb);
-        this.mana = mana;
-        this.dexterity = dexterity;
+        super(name, DEFAULT_DEFENSE, cb);
+        this.strength = new Attribute("Strength", strength);
+        this.maxMana = new Attribute("Max Mana", mana);
+        this.agility = new Attribute("Agility", agility);
+        this.dexterity = new Attribute("Dexterity", agility);;
         this.gold = gold;
         this.exp = exp;
         this.level = 1;
+        this.maxHealth = new Attribute("Max Health", level * 100);
         this.health = level * 100;
+        this.mana = mana;
+        this.hands = 2;
+        this.inventory = new ArrayList<>();
+    }
+
+
+    public void useOrEquipItem(Item item) {
+        System.out.println("[Debug]: There is no useOrEquip defined for this item type");
+    }
+
+    public boolean useOrEquipItem(Armor armor) {
+        if (this.armor == null) {
+            this.armor = armor;
+            defense = DEFAULT_DEFENSE + armor.getDamageReduction();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Armor getArmor() {
+        return armor;
+    }
+
+    public boolean useOrEquipItem(Weapon weapon) {
+        int requiredHands = weapon.getRequiredHands();
+        if (hands < requiredHands) {
+            return false;
+        } else {
+            this.weapon = weapon;
+            return true;
+        }
+    }
+
+    public void useOrEquipItem(Potion potion) {
+        int attInc = potion.getAttributeIncrease();
+        List<String> affectedAttributes = potion.getAffectedAttributes();
+        for (String attribute : affectedAttributes) {
+            if (attribute.equals("Health")) {
+                health += attInc;
+            } else if (attribute.equals("Strength")) {
+                strength.increaseValueFlat(attInc);
+            } else if (attribute.equals("Mana")) {
+                mana += attInc;
+            } else if (attribute.equals("Dexterity")) {
+                dexterity.increaseValueFlat(attInc);
+            } else if (attribute.equals("Defense")) {
+                defense += attInc;
+            } else if (attribute.equals("Agility")) {
+                agility.increaseValueFlat(attInc);
+            } else {
+                System.out.println("[Debug]: Unspecified potion effect!");
+            }
+        }
+        inventory.remove(potion);
+    }
+
+    public <T extends Item> List<T> getItemsOfType(Class<T> itemType) {
+        List<T> items = new ArrayList<>();
+        for (Item i : inventory) {
+            if (itemType.isInstance(i)) {
+                items.add(itemType.cast(i));
+            }
+        }
+        return items;
+    }
+
+    public void sellItem(int index) {
+        Item itemToSell = inventory.get(index);
+        gold += itemToSell.getCost() / 2;
+        inventory.remove(itemToSell);
+    }
+
+    public int getAgility() {
+        return agility.getValue();
     }
 
     public int getDexterity() {
-        return dexterity;
+        return dexterity.getValue();
     }
 
     public int getMana() {
@@ -40,6 +128,68 @@ public class Hero extends Entity {
         return exp;
     }
 
+    public int getStrength() {
+        return strength.getValue();
+    }
+
+    public void gainExp(int exp) {
+        this.exp += exp;
+        while (this.exp >= level * 10) {
+            this.exp -= level * 10;
+            levelUp();
+        }
+    }
+
+    public int getMaxHealth() {
+        return maxHealth.getValue();
+    }
+
+
+    public Weapon getWeapon() {
+        return weapon;
+    }
+
+    public Attribute getStrengthAttribute() {
+        return strength;
+    }
+
+    public Attribute getDexterityAttribute() {
+        return dexterity;
+    }
+
+    public Attribute getAgilityAttribute() {
+        return agility;
+    }
+
+    private void levelUp() {
+        System.out.println("Hero " + name + " leveled up! (" + level + "->" + (++level) + ")");
+        maxHealth.increaseValuePercentage(Settings.LEVELUP_MULTIPLIER);
+        maxMana.increaseValuePercentage(Settings.LEVELUP_MULTIPLIER);
+        strength.increaseValuePercentage(Settings.LEVELUP_MULTIPLIER);
+        dexterity.increaseValuePercentage(Settings.LEVELUP_MULTIPLIER);
+        agility.increaseValuePercentage(Settings.LEVELUP_MULTIPLIER);
+
+        cb.applyLevelUpBonus(this);
+    }
+
+    public List<Item> getInventory() {
+        return inventory;
+    }
+
+    public boolean displayInventory() {
+        if (inventory.isEmpty()) {
+            System.out.println("No items in inventory for " + name);
+            return false;
+        }
+        int index = 0;
+        for (Item i : inventory) {
+            System.out.println(name + "'s Inventory: ");
+            System.out.print("[" + index + "] ");
+            i.displayItemInformationInventory();
+        }
+        return true;
+    }
+
     public void takeDamage(int dmg) {
         health -= dmg;
         if (health < 0) {
@@ -47,12 +197,46 @@ public class Hero extends Entity {
         }
     }
 
+    public int getLevel() {
+        return level;
+    }
+
     public int getHealth() {
         return health;
     }
 
+    public void gainHealth(int health) {
+        this.health += health;
+    }
+
+    public void gainMana(int mana) {
+        this.mana += mana;
+    }
+
+    public int getMaxMana() {
+        return maxMana.getValue();
+    }
+
+    public void addItem(Item item) {
+        inventory.add(item);
+    }
+
     public boolean isFainted() {
         return health <= 0;
+    }
+
+    public void revive() {
+        if (health <= 0) {
+            health = (int) (maxHealth.getValue()* 0.5);
+        }
+    }
+
+    public void deductGold(int gold) {
+        this.gold -= gold;
+    }
+
+    public void gainGold(int gold) {
+        this.gold += gold;
     }
 
     // Funcntion with assistance from Claude.Ai (regarding parsing from file)

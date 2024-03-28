@@ -6,11 +6,22 @@ public class Armor extends Item {
         this.damageReduction = damageReduction;
     }
 
-    public void displayItemInformation() {
+    public void displayItemInformationMarket(int index) {
+        System.out.println("Item " + index);
         System.out.println("Name: " + getName());
         System.out.println("Cost: " + getCost());
         System.out.println("Required Level: " + getRequiredLevel());
         System.out.println("Damage Reduction: " + getDamageReduction());
+    }
+
+    public void displayItemInformationInventory() {
+        System.out.println("Name: " + getName());
+        System.out.println("Cost: " + getCost());
+        System.out.println("Damage Reduction: " + getDamageReduction());
+    }
+
+    public void printEffect() {
+        System.out.println("It gave the user " + getDamageReduction() + " damage reduction");
     }
 
     public int getDamageReduction() {

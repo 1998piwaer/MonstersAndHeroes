@@ -2,8 +2,9 @@ import java.util.*;
 
 public class MonsterParty {
     List<Monster> party;
+    Input input = Input.getSingletonInput();
 
-    public MonsterParty(int size) {
+    public MonsterParty(int size, int level) {
         party = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             double roll = Math.random();
@@ -17,8 +18,28 @@ public class MonsterParty {
         }
     }
 
+    public void displayPartyInformation() {
+        Settings.clearTerminal();
+        for (int i = 0; i < party.size(); i++) {
+            Monster currentMonster = party.get(i);
+            System.out.println("----------------------");
+            System.out.println("Monster " + i + " information:");
+            System.out.println("Name: " + currentMonster.getCombatBehavior().getType() + " " 
+                    + currentMonster.getName() + " (Lvl " + currentMonster.getLevel() + ")");
+            System.out.println("HP: " + currentMonster.getHealth());
+            System.out.println("Damage: " + currentMonster.getAttackDamage() + "; Defense: "
+                    + currentMonster.getDefense() + "; Dodge Chance: " + currentMonster.getDodgeChance());
+        }
+        System.out.println("Input any key to continue");
+        input.getString();
+    }
+
     public List<Monster> getMonsterParty() {
         return party;
+    }
+
+    public void removeMonster(int index) {
+        party.remove(index);
     }
 
     public void printMonsterParty() {

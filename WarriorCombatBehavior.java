@@ -10,17 +10,27 @@ public class WarriorCombatBehavior implements CombatBehavior {
     }
 
     // TODO: Implement armor (should take it in)
-    public int tankAttack(int dmg) {
+    public int tank(int dmg, int defense, double dodgeChace) {
         double roll = Math.random();
-        if (roll < Settings.BASE_DODGE_CHANCE * Settings.AFFINITY_MULTIPLIER) {
+        if (roll < dodgeChace * Settings.AFFINITY_MULTIPLIER) {
+            System.out.println("The hero managed to dodge the attack!");
             return 0;
         } else {
-            return dmg;
+            return dmg - defense > 0 ? dmg - defense : 0;
         }
     }
 
-    // Monsters can't cast spells yet
-    public int tankSpell(int dmg) {
-        return dmg;
+    public int tankCantDodge(int dmg, int defense) {
+        return dmg - defense > 0 ? dmg - defense : 0;
+    }
+
+    public String getType() {
+        return "Warrior";
+    }
+
+    public void applyLevelUpBonus(Hero hero) {
+        System.out.println("Since this hero is a warrior, they gain extra strength and agility!");
+        hero.getStrengthAttribute().increaseValuePercentage(Settings.LEVELUP_MULTIPLIER);
+        hero.getAgilityAttribute().increaseValuePercentage(Settings.LEVELUP_MULTIPLIER);
     }
 }

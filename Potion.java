@@ -23,10 +23,18 @@ public class Potion extends Item {
         this.increaseAgility = increaseAgility;
     }
 
-    public void displayItemInformation() {
+    public void displayItemInformationMarket(int index) {
+        System.out.println("Item " + index);
         System.out.println("Name: " + getName());
         System.out.println("Cost: " + getCost());
         System.out.println("Required Level: " + getRequiredLevel());
+        System.out.println("Attribute Increase: " + getAttributeIncrease());
+        System.out.println("Attributes Affected: " +  String.join(", ", getAffectedAttributes()));
+    }
+
+    public void displayItemInformationInventory() {
+        System.out.println("Name: " + getName());
+        System.out.println("Cost: " + getCost());
         System.out.println("Attribute Increase: " + getAttributeIncrease());
         System.out.println("Attributes Affected: " +  String.join(", ", getAffectedAttributes()));
     }
@@ -35,7 +43,11 @@ public class Potion extends Item {
         return attributeIncrease;
     }
 
-    private List<String> getAffectedAttributes() {
+    public void printEffect() {
+        System.out.println("It increased " + String.join(", ", getAffectedAttributes()) + " by " + getAttributeIncrease());
+    }
+
+    public List<String> getAffectedAttributes() {
         List<String> attributes = new ArrayList<>();
 
         if (increaseHealth) {

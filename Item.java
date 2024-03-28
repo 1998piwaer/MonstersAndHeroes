@@ -9,7 +9,11 @@ public abstract class Item {
         this.requiredLevel = requiredLevel;
     }
 
-    abstract void displayItemInformation();
+    abstract void displayItemInformationMarket(int index);
+
+    abstract void displayItemInformationInventory();
+
+    abstract void printEffect();
 
     public String getName() {
         return name;

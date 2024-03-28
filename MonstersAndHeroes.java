@@ -4,9 +4,7 @@ public class MonstersAndHeroes implements Playable {
     private HeroParty playerParty;
     private Input input = Input.getSingletonInput();
     private Board board;
-    private final static int COMMON = 0;
     private final static int INACCESSIBLE = -1;
-    private final static int MARKET = 1;
     private boolean inCombat;
     public MonstersAndHeroes() {
         inCombat = false;
@@ -44,6 +42,7 @@ public class MonstersAndHeroes implements Playable {
         while(!input.isQuit()) {
             visualize();
             printPartySpace();
+            System.out.println("Up [W], Left [A], Down [S], Right [D], Equip [E], Enter Market [M], See Party Information [I]");
             if (!inCombat) {
                 boolean valid = false;
                 do {
@@ -62,6 +61,9 @@ public class MonstersAndHeroes implements Playable {
                         int currR = playerParty.getHeroPartyRow();
                         int currC = playerParty.getHeroPartyCol();
                         board.getGrid(currR, currC).getSpace().interact(playerParty);
+                        valid = true;
+                    } else if (action.equals("e")) {
+                        playerParty.equipOrUse();
                         valid = true;
                     }
                 } while (!valid);
@@ -93,6 +95,8 @@ public class MonstersAndHeroes implements Playable {
     }
 
     private void visualize() {
+        Settings.clearTerminal();
+        
         int rows = board.getRows();
         int cols = board.getCols();
         int playerRow = playerParty.getHeroPartyRow();
@@ -108,7 +112,9 @@ public class MonstersAndHeroes implements Playable {
             for (int j = 0; j < cols; j++) {
                 System.out.print(" ");
                 if (playerRow == i && playerCol == j) {
+                    System.out.print(Settings.HERO_COLOR);
                     System.out.print("H");
+                    System.out.print(Settings.DEFAULT_COLOR);
                 } else {
                     board.getGrid(i, j).printGrid();
                 }
@@ -152,6 +158,7 @@ public class MonstersAndHeroes implements Playable {
         hs.add("q");
         hs.add("i");
         hs.add("m");
+        hs.add("e");
         String s = input.getString(hs);
         return s;
     }

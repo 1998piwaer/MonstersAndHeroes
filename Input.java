@@ -1,6 +1,6 @@
 import java.util.*;
 public class Input {
-    public static Input singletonInput;
+    private static Input singletonInput;
 
     private Scanner input;
     private boolean quit;
@@ -14,6 +14,15 @@ public class Input {
             singletonInput = new Input();
         }
         return singletonInput;
+    }
+
+    private void exit() {
+        System.out.println("Thanks for playing!");
+        System.exit(0);
+    }
+
+    public void setQuit(boolean b) {
+        quit = b;
     }
 
     public boolean isQuit() {
@@ -51,8 +60,8 @@ public class Input {
                 valid = true;
             } catch (Exception e) {
                 String s = input.nextLine();
-                if (s.toLowerCase().equals("quit")) {
-                    return -1;
+                if (s.toLowerCase().equals("q")) {
+                    exit();
                 }
                 printTypeError();
                 valid = false;
@@ -77,9 +86,8 @@ public class Input {
                 }
             } catch (Exception e) {
                 String s = input.nextLine();
-                if (s.toLowerCase().equals("quit")) {
-                    quit = true;
-                    return -1;
+                if (s.toLowerCase().equals("q")) {
+                    exit();
                 }
                 printTypeError();
             }
@@ -104,9 +112,8 @@ public class Input {
                 }
             } catch (Exception e) {
                 String s = input.nextLine();
-                if (s.toLowerCase().equals("quit")) {
-                    quit = true;
-                    return -1;
+                if (s.toLowerCase().equals("q")) {
+                    exit();
                 }
                 printTypeError();
             }
@@ -116,9 +123,8 @@ public class Input {
 
     public String getString() {
         String s = input.nextLine();
-        if (s.toLowerCase().equals("quit")) {
-            quit = true;
-            return "quit";
+        if (s.toLowerCase().equals("q")) {
+            exit();
         }
         return s;
     }
@@ -136,7 +142,7 @@ public class Input {
             }
         }
         if (s.equals("q")) {
-            quit = true;
+            exit();
         }
         return s;
     }

@@ -8,18 +8,23 @@ public class SorcererCombatBehavior implements CombatBehavior {
         return (int) (dmg * Settings.AFFINITY_MULTIPLIER);
     }
 
-    // TODO: Implement armor (should take it in)
-    public int tankAttack(int dmg) {
+    public int tank(int dmg, int defense, double dodgeChance) {
         double roll = Math.random();
-        if (roll < Settings.BASE_DODGE_CHANCE * Settings.AFFINITY_MULTIPLIER) {
+        if (roll < dodgeChance * Settings.AFFINITY_MULTIPLIER) {
+            System.out.println("The hero managed to dodge the attack!");
             return 0;
         } else {
-            return dmg;
+            return dmg - defense > 0 ? dmg - defense : 0;
         }
     }
 
-    // Monsters can't cast spells yet
-    public int tankSpell(int dmg) {
-        return dmg;
+    public String getType() {
+        return "Sorcerer";
+    }
+
+    public void applyLevelUpBonus(Hero hero) {
+        System.out.println("Since this hero is a sorcerer, they gain extra dexterity and agility!");
+        hero.getDexterityAttribute().increaseValuePercentage(Settings.LEVELUP_MULTIPLIER);
+        hero.getAgilityAttribute().increaseValuePercentage(Settings.LEVELUP_MULTIPLIER);
     }
 }
