@@ -12,15 +12,16 @@ public class CommonSpace implements SpaceFactory {
             if (combat.isCompleted() == 1) {
                 System.out.println("You've successfully defeated all the monsters!");
                 combat.heroVictory();
-                System.out.println("Input any key to continue");
-                input.getString();
             } else if (combat.isCompleted() == 2) {
                 System.out.println("You've been defeated by the monsters.");
                 System.out.println("Game over!");    
-                System.out.println("Input any key to continue");
-                input.getString();
                 input.setQuit(true);
+            } else if (combat.isCompleted() == 3) {
+                System.out.println("The party managed to run away!");
+                System.out.println("The party doesn't gain anything");
             }
+            System.out.println("Input any key to continue");
+            input.getString();
         }
     }
     public void interact(HeroParty heroParty) {

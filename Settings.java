@@ -5,13 +5,16 @@ public class Settings {
 
     public static final float ENCOUNTER_CHANCE = 0.2f;
 
-    public static final float DODGE_CHANCE_RATIO = 0.005f;
-    public static final float AGILITY_TO_DODGE_CHANCE_RATIO = 0.0002f;
+    public static final float DODGE_CHANCE_RATIO = 0.002f;
+    public static final float AGILITY_TO_DODGE_CHANCE_RATIO = 0.00005f;
 
     public static final float LEVELUP_MULTIPLIER = 0.05f;
+    public static final float RUN_SUCCESS_CHANCE = 0.5f;
 
     public static final int MIN_PARTY_SIZE = 1;
     public static final int MAX_PARTY_SIZE = 3;
+
+    public static final int HEALTH_PER_LEVEL = 500;
 
     public static final String DEFAULT_COLOR = "\u001B[0m";
     public static final String HERO_COLOR = "\u001B[34m";
@@ -22,6 +25,8 @@ public class Settings {
     public static final float INACCESSIBLE_SPACE_PROPORTION = 0.2f;
     public static final float MARKET_SPACE_PROPORTION = 0.3f;
     public static final float COMMON_SPACE_PROPORTION = 0.5f;
+
+    public static final float DEFENSE_EFFECTIVENESS = 0.5f;
 
     // Must add up to 1, otherwise code may crash.
     public static final float EXOSKELETON_CHANCE = 0.3f;

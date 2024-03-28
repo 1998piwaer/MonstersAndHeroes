@@ -16,12 +16,8 @@ public class WarriorCombatBehavior implements CombatBehavior {
             System.out.println("The hero managed to dodge the attack!");
             return 0;
         } else {
-            return dmg - defense > 0 ? dmg - defense : 0;
+            return (int) (dmg - defense * Settings.DEFENSE_EFFECTIVENESS) > 0 ? (int) (dmg - defense * Settings.DEFENSE_EFFECTIVENESS) : 0;
         }
-    }
-
-    public int tankCantDodge(int dmg, int defense) {
-        return dmg - defense > 0 ? dmg - defense : 0;
     }
 
     public String getType() {

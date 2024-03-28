@@ -14,9 +14,6 @@ public class MonstersAndHeroes implements Playable {
         // 1 Warrior 1 Sorcerer, 1 Paladin, 8 x 8 board
         System.out.println("Do you want to play with default settings? [T/F]");
         boolean defaultSettings = input.getBoolean();
-        if (input.isQuit()) {
-            return;
-        }
 
         if (defaultSettings) {
             playerParty = new HeroParty();
@@ -29,12 +26,23 @@ public class MonstersAndHeroes implements Playable {
                 playerParty.initPartyCoordinates(Settings.DEFAULT_NUM_ROWS, Settings.DEFAULT_NUM_COLS);
             } while (board.getGrid(playerParty.getHeroPartyRow(), playerParty.getHeroPartyCol()).getType() == Settings.INACCESSIBLE);
         } else {
-            // System.out.println("How many people do you want in your party?");
-            // int partySize = input.getInt(Settings.MIN_PARTY_SIZE, Settings.MAX_PARTY_SIZE);
-            // if (input.isQuit()) {
-            //     return;
-            // }
-            // TODO: Implement non-default
+            System.out.println("How many people do you want in your party?");
+            int partySize = input.getInt(Settings.MIN_PARTY_SIZE, Settings.MAX_PARTY_SIZE);
+            Set<String> hs = new HashSet<>();
+            hs.add("w");
+            hs.add("p");
+            hs.add("s");
+            for (int i = 0; i < partySize; i++) {
+                System.out.println("What class of hero would you like? Warrior [W], Palandin [P], Sorcerer [S]");
+                String heroClass = input.getString(hs);
+                if (heroClass == "w") {
+                    playerParty.addPartyMember(Hero.createRandomHeroFromFile(new WarriorCombatBehavior()));
+                } else if (heroClass == "p") {
+                    playerParty.addPartyMember(Hero.createRandomHeroFromFile(new PaladinCombatBehavior()));
+                } else if (heroClass == "s") {
+                    playerParty.addPartyMember(Hero.createRandomHeroFromFile(new SorcererCombatBehavior()));
+                }
+            }
         }
     }
 

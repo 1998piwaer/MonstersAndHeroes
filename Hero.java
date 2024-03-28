@@ -33,7 +33,7 @@ public class Hero extends Entity {
         this.gold = gold;
         this.exp = exp;
         this.level = 1;
-        this.maxHealth = new Attribute("Max Health", level * 100);
+        this.maxHealth = new Attribute("Max Health", level * Settings.HEALTH_PER_LEVEL);
         this.health = level * 100;
         this.mana = mana;
         this.hands = 2;
@@ -46,13 +46,15 @@ public class Hero extends Entity {
     }
 
     public boolean useOrEquipItem(Armor armor) {
-        if (this.armor == null) {
-            this.armor = armor;
-            defense = DEFAULT_DEFENSE + armor.getDamageReduction();
-            return true;
-        } else {
-            return false;
+        if (this.armor != null) {
+            inventory.add(this.armor);
+            this.armor = null;
         }
+        this.armor = armor;
+        inventory.remove(armor);
+        defense = DEFAULT_DEFENSE + armor.getDamageReduction();
+        return true;
+
     }
 
     public Armor getArmor() {
@@ -64,7 +66,12 @@ public class Hero extends Entity {
         if (hands < requiredHands) {
             return false;
         } else {
+            if (this.weapon != null) {
+                inventory.add(this.weapon);
+                this.weapon = null;
+            }
             this.weapon = weapon;
+            inventory.remove(weapon);
             return true;
         }
     }

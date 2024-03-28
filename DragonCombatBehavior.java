@@ -14,7 +14,7 @@ public class DragonCombatBehavior implements CombatBehavior {
             System.out.println("The monster managed to dodge the attack!");
             return 0;
         } else {
-            return dmg - defense > 0 ? dmg - defense : 0;
+            return dmg - defense * Settings.DEFENSE_EFFECTIVENESS > 0 ? (int) (dmg - defense * Settings.DEFENSE_EFFECTIVENESS) : 0;
         }
     }
 

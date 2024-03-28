@@ -22,6 +22,13 @@ public class MarketSpace implements SpaceFactory {
             for (Hero h: heroList) {
                 Settings.clearTerminal();
                 market.displayItems();
+                if (market.getCatalogSize() == 0) {
+                    System.out.println("The market is out of items!");
+                    System.out.println("Input any key to continue");
+                    input.getString();
+                    userInput = "e";
+                    break;
+                }
                 System.out.println("Will hero " + h.getName() + " (Gold: " + h.getGold() + ") like to buy [B], sell [S],"
                 + " move on to the next hero [N] or exit [E]?");
                 userInput = input.getString(hs);
@@ -39,15 +46,18 @@ public class MarketSpace implements SpaceFactory {
     }
 
     private void sell(Hero h) {
-        int itemIndex = -1;
+        int itemIndex = 0;
 
-        do {
-            market.displayItems();
+        while (itemIndex != -1 || h.getInventory().size() > 0) {
+            h.displayInventory();
             System.out.println("Which item (or none [-1]) would you like to sell?");
             System.out.println("Hero " + h.getName() + " has " + h.getGold() + " gold.");
             itemIndex = input.getInt(-1, h.getInventory().size() - 1);
-            h.sellItem(itemIndex);
-        } while (itemIndex != -1);
+            if (itemIndex != -1) {
+                h.sellItem(itemIndex);
+            } 
+            
+        } 
     }
 
     private void buy(Hero h) {

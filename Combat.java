@@ -6,12 +6,14 @@ public class Combat {
     private List<Monster> monsterList;
     private int potentialExp;
     private int potentialGold;
+    private boolean run;
     private static final String ACTION_INCOMPLETED = "not completed";
 
     private Input input = Input.getSingletonInput();
     public Combat(HeroParty heroParty) {
         this.heroParty = heroParty;
         this.heroList = heroParty.getHeroParty();
+        this.run = false;
         int maxHeroLevel = 0;
         for (Hero h : heroList) {
             maxHeroLevel = Math.max(h.getLevel(), maxHeroLevel);
@@ -42,12 +44,16 @@ public class Combat {
             hs.add("p");
             hs.add("e");
             hs.add("i");
-            printCombatState();
+            hs.add("r");
+            
             String action = "";
             do {
                 if (action == ACTION_INCOMPLETED) {
+                    System.out.println("Input any key to continue");
+                    input.getString();
                     Settings.clearTerminal();
                 }
+                printCombatState();
                 System.out.println("Pick an action to choose for Hero " + currHero.getName());
                 System.out.println("Attack [A], Cast Spell [S], Use Potion [P], Equip Armor/Weapon [E],"
                         + " Check Party Information [I], Run Away! [R]");
@@ -78,6 +84,14 @@ public class Combat {
                 } else if (action.equals("i")) {
                     printInDepthCombatState();
                     Settings.clearTerminal();
+                } else if (action.equals("r")) {
+                    if (Math.random() < Settings.RUN_SUCCESS_CHANCE) {
+                        run = true;
+                        action = ACTION_INCOMPLETED;
+                    } else {
+                        Settings.clearTerminal();
+                        System.out.println("The party couldn't escape");
+                    }
                 }
                 if (isCompleted() != 0) {
                     break;
@@ -121,6 +135,9 @@ public class Combat {
     // Returns 1 if Heros win, returns 2 if Monsters win, returns 0 if still in progress
     // Returns -1 if both are dead (should not be possible [only for debugging])
     public int isCompleted() {
+        if (run) {
+            return 3;
+        }
         boolean heroesAlive = false;
         boolean monstersAlive = false;
 
