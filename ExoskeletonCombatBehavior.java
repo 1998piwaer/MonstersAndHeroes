@@ -14,7 +14,7 @@ public class ExoskeletonCombatBehavior implements CombatBehavior {
             System.out.println("The monster managed to dodge the attack!");
             return 0;
         } else {
-            return (int) (dmg / Settings.AFFINITY_MULTIPLIER) > 0 ? (int) (dmg / Settings.AFFINITY_MULTIPLIER) : 0;
+            return (int) (dmg / Settings.AFFINITY_MULTIPLIER - defense) > 0 ? (int) (dmg / Settings.AFFINITY_MULTIPLIER - defense) : 0;
         }
     }
 

@@ -29,9 +29,13 @@ public class Combat {
     public void combatTurn() {
         System.out.println("Hero's Turn!");
         for (Hero currHero : heroList) {
+            if (isCompleted() != 0) {
+                break;
+            }
             if (currHero.isFainted()) {
                 continue;
             }
+            
             Set<String> hs = new HashSet<>();
             hs.add("a");
             hs.add("s");
@@ -46,7 +50,7 @@ public class Combat {
                 }
                 System.out.println("Pick an action to choose for Hero " + currHero.getName());
                 System.out.println("Attack [A], Cast Spell [S], Use Potion [P], Equip Armor/Weapon [E],"
-                        + " Check Party Information [I]");
+                        + " Check Party Information [I], Run Away! [R]");
                 action = input.getString(hs);
                 if (action.equals("a")) {
                     if(!performAttack(currHero)) {
@@ -75,10 +79,10 @@ public class Combat {
                     printInDepthCombatState();
                     Settings.clearTerminal();
                 }
+                if (isCompleted() != 0) {
+                    break;
+                }
             } while (action.equals("i") || action.equals(ACTION_INCOMPLETED));
-            if (isCompleted() != 0) {
-                break;
-            }
         }
         if (isCompleted() == 0) {
             System.out.println("---------------");
@@ -99,11 +103,13 @@ public class Combat {
 
     private void printCombatState() {
         System.out.println("-------------------");
-        System.out.println("Heroe Party's State:");
+        System.out.println("Hero Party's State:");
         for (Hero h : heroList) {
-            System.out.println(h.getName() + ": HP=" + h.getHealth() + "; MP=" + h.getMana());
-            System.out.println("Available Items & Spells:"); 
-            h.displayInventory();
+            if (!h.isFainted()) {
+                System.out.println(h.getName() + ": HP=" + h.getHealth() + "; MP=" + h.getMana());
+                System.out.println("Available Items & Spells:"); 
+                h.displayInventory();
+            }
         }
         System.out.println("-------------------");
         System.out.println("Monster Party's State:");
@@ -260,6 +266,27 @@ public class Combat {
         }
     }
 
+    private void performAttack(Monster monster) {
+        CombatBehavior monsterCb = monster.getCombatBehavior();
+        Random random = new Random();
+        Set<Integer> hs = heroParty.getAliveHeroesIndices();
+
+        //https://www.geeksforgeeks.org/how-to-get-random-elements-from-java-hashset/
+        Integer[] arrayNumbers = hs.toArray(new Integer[hs.size()]);
+        int target = random.nextInt(hs.size()); 
+        Hero targetHero = heroParty.getHeroParty().get(arrayNumbers[target]);
+
+        CombatBehavior heroCb = targetHero.getCombatBehavior();
+        int damage = heroCb.tank(monsterCb.attack(monster.getAttackDamage()), targetHero.getDefense(),
+                targetHero.getAgility() * Settings.AGILITY_TO_DODGE_CHANCE_RATIO);
+        targetHero.takeDamage(damage);
+        System.out.println("Monster " + monster.getName() + " attacked Hero " + targetHero.getName() 
+                + " for " + damage + " damage!");
+        if (targetHero.isFainted()) {
+            System.out.println("Hero " + targetHero.getName() + " has fainted!");
+        }
+    }
+
     private boolean performAttack(Hero hero) {
         Settings.clearTerminal();
         CombatBehavior heroCb = hero.getCombatBehavior();
@@ -301,21 +328,7 @@ public class Combat {
         return true;
     }
 
-    private void performAttack(Monster monster) {
-        CombatBehavior monsterCb = monster.getCombatBehavior();
-        Random random = new Random();
-        int target = random.nextInt(heroParty.size());
-        Hero targetHero = heroParty.getHeroParty().get(target);
-        CombatBehavior heroCb = targetHero.getCombatBehavior();
-        int damage = heroCb.tank(monsterCb.attack(monster.getAttackDamage()), targetHero.getDefense(),
-                targetHero.getAgility() * Settings.AGILITY_TO_DODGE_CHANCE_RATIO);
-        targetHero.takeDamage(damage);
-        System.out.println("Monster " + monster.getName() + " attacked Hero " + targetHero.getName() 
-                + " for " + damage + " damage!");
-        if (targetHero.isFainted()) {
-            System.out.println("Hero " + targetHero.getName() + " has fainted!");
-        }
-    }
+    
 
     public void heroVictory() {
         System.out.println("Alive party members gained " + potentialGold + " gold");

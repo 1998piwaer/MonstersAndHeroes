@@ -40,6 +40,16 @@ public class HeroParty {
         input.getString();
     }
 
+    public Set<Integer> getAliveHeroesIndices() {
+        Set<Integer> hs = new HashSet<>();
+        for (int i = 0; i < party.size(); i++) {
+            if (!party.get(i).isFainted()) {
+                hs.add(i);
+            }
+        }
+        return hs;
+    }
+
     public void endBattleRegainHpMp() {
         for (Hero h : party) {
             if (!h.isFainted()) {
