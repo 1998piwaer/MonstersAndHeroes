@@ -8,6 +8,7 @@ public class Armor extends Item {
 
     public void displayItemInformationMarket(int index) {
         System.out.println("Item " + index);
+        System.out.println("Required Level " + getRequiredLevel());
         System.out.println("Name: " + getName());
         System.out.println("Cost: " + getCost());
         System.out.println("Required Level: " + getRequiredLevel());

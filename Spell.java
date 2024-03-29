@@ -12,8 +12,8 @@ public class Spell extends Item {
     public void displayItemInformationMarket(int index) {
         System.out.println("Item " + index);
         System.out.println("Name: " + getName());
-        System.out.println("Cost: " + getCost());
         System.out.println("Required Level: " + getRequiredLevel());
+        System.out.println("Cost: " + getCost());
         System.out.println("Damage: " + getDamage());
         System.out.println("Mana Cost: " + getManaCost());
         System.out.println("Spell Type: " + getType());
@@ -25,6 +25,7 @@ public class Spell extends Item {
 
     public void displayItemInformationInventory() {
         System.out.println("Name: " + getName());
+        System.out.println("Required Level: " + getRequiredLevel());
         System.out.println("Cost: " + getCost());
         System.out.println("Damage: " + getDamage());
         System.out.println("Mana Cost: " + getManaCost());

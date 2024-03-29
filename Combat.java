@@ -237,6 +237,11 @@ public class Combat {
                     return false;
                 }
                 Spell selectedSpell = availableSpells.get(selectedSpellIndex);
+                if (selectedSpell.getRequiredLevel() > hero.getLevel()) {
+                    System.out.println(hero.getName() + " (lvl " + hero.getLevel() + ") is "
+                    + "underleveled for the item! Required Level: " + selectedSpell.getRequiredLevel());
+                    return false;
+                }
                 System.out.println("Which monster would you like to attack? Or go back? [-1]");
                 monsterParty.printMonsterParty();
                 int target = input.getInt(-1, monsterParty.size() - 1);

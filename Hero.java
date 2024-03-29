@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.w3c.dom.Attr;
-
 public class Hero extends Entity {
     private static final int DEFAULT_DEFENSE = 500;
     private Attribute strength;
@@ -46,14 +44,20 @@ public class Hero extends Entity {
     }
 
     public boolean useOrEquipItem(Armor armor) {
-        if (this.armor != null) {
-            inventory.add(this.armor);
-            this.armor = null;
+        if (armor.getRequiredLevel() > level) {
+            System.out.println(name + " (lvl " + level + ") is underleveled for the item! Required Level: " + armor.getRequiredLevel());
+            return false;
+        } else {
+            if (this.armor != null) {
+                inventory.add(this.armor);
+                this.armor = null;
+            }
+            this.armor = armor;
+            inventory.remove(armor);
+            defense = DEFAULT_DEFENSE + armor.getDamageReduction();
+            return true;
         }
-        this.armor = armor;
-        inventory.remove(armor);
-        defense = DEFAULT_DEFENSE + armor.getDamageReduction();
-        return true;
+        
 
     }
 
@@ -62,41 +66,53 @@ public class Hero extends Entity {
     }
 
     public boolean useOrEquipItem(Weapon weapon) {
-        int requiredHands = weapon.getRequiredHands();
-        if (hands < requiredHands) {
+        if (weapon.getRequiredLevel() > level) {
+            System.out.println(name + " (lvl " + level + ") is underleveled for the item! Required Level: " + armor.getRequiredLevel());
             return false;
         } else {
-            if (this.weapon != null) {
-                inventory.add(this.weapon);
-                this.weapon = null;
+            int requiredHands = weapon.getRequiredHands();
+            if (hands < requiredHands) {
+                System.out.println("You don't have enough hands to equip this weapon!");
+                return false;
+            } else {
+                if (this.weapon != null) {
+                    inventory.add(this.weapon);
+                    this.weapon = null;
+                }
+                this.weapon = weapon;
+                inventory.remove(weapon);
+                return true;
             }
-            this.weapon = weapon;
-            inventory.remove(weapon);
-            return true;
         }
     }
 
-    public void useOrEquipItem(Potion potion) {
-        int attInc = potion.getAttributeIncrease();
-        List<String> affectedAttributes = potion.getAffectedAttributes();
-        for (String attribute : affectedAttributes) {
-            if (attribute.equals("Health")) {
-                health += attInc;
-            } else if (attribute.equals("Strength")) {
-                strength.increaseValueFlat(attInc);
-            } else if (attribute.equals("Mana")) {
-                mana += attInc;
-            } else if (attribute.equals("Dexterity")) {
-                dexterity.increaseValueFlat(attInc);
-            } else if (attribute.equals("Defense")) {
-                defense += attInc;
-            } else if (attribute.equals("Agility")) {
-                agility.increaseValueFlat(attInc);
-            } else {
-                System.out.println("[Debug]: Unspecified potion effect!");
+    public boolean useOrEquipItem(Potion potion) {
+        if (potion.getRequiredLevel() > level) {
+            System.out.println(name + " (lvl " + level + ") is underleveled for the item! Required Level: " + armor.getRequiredLevel());
+            return false;
+        } else {
+            int attInc = potion.getAttributeIncrease();
+            List<String> affectedAttributes = potion.getAffectedAttributes();
+            for (String attribute : affectedAttributes) {
+                if (attribute.equals("Health")) {
+                    health += attInc;
+                } else if (attribute.equals("Strength")) {
+                    strength.increaseValueFlat(attInc);
+                } else if (attribute.equals("Mana")) {
+                    mana += attInc;
+                } else if (attribute.equals("Dexterity")) {
+                    dexterity.increaseValueFlat(attInc);
+                } else if (attribute.equals("Defense")) {
+                    defense += attInc;
+                } else if (attribute.equals("Agility")) {
+                    agility.increaseValueFlat(attInc);
+                } else {
+                    System.out.println("[Debug]: Unspecified potion effect!");
+                }
             }
+            inventory.remove(potion);
+            return true;
         }
-        inventory.remove(potion);
     }
 
     public <T extends Item> List<T> getItemsOfType(Class<T> itemType) {
@@ -188,11 +204,10 @@ public class Hero extends Entity {
             System.out.println("No items in inventory for " + name);
             return false;
         }
-        int index = 0;
-        for (Item i : inventory) {
+        for (int i = 0; i < inventory.size(); i++) {
             System.out.println(name + "'s Inventory: ");
-            System.out.print("[" + index + "] ");
-            i.displayItemInformationInventory();
+            System.out.print("[" + i + "] ");
+            inventory.get(i).displayItemInformationInventory();
         }
         return true;
     }

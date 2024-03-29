@@ -1,6 +1,7 @@
 import java.util.*;
 public class Market {
     private List<Item> catalog;
+    private Input input = Input.getSingletonInput();
 
     public Market() {
         catalog = new ArrayList<>();
@@ -26,6 +27,8 @@ public class Market {
         Item selectedItem = catalog.get(index);
         if (h.getGold() < selectedItem.getCost()) {
             System.out.println("Hero " + h.getName() + " doesn't have enough gold!");
+            System.out.println("Input any key to continue");
+            input.getString();
             return false;
         } else {
             h.deductGold(selectedItem.getCost());

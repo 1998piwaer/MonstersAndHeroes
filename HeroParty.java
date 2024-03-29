@@ -53,8 +53,15 @@ public class HeroParty {
     public void endBattleRegainHpMp() {
         for (Hero h : party) {
             if (!h.isFainted()) {
+                int oldHealth = h.getHealth();
+                int oldMana = h.getMana();
                 h.gainHealth((int) (h.getMaxHealth() * 0.1));
                 h.gainMana((int) (h.getMaxMana() * 0.1));
+                int newHealth = h.getHealth();
+                int newMana = h.getMana();
+                System.out.println("Non-fainted hero " + h.getName() + " gains back with 10% of their max HP [" 
+                        + h.getMaxHealth() + "] & MP [" + h.getMaxMana() +"] HP: " + oldHealth + "->" + newHealth
+                        + "MP: " + oldMana + "->" + newMana);
             }
         }
     }
@@ -68,7 +75,14 @@ public class HeroParty {
     public void reviveIfFainted() {
         for (Hero h : party) {
             if (h.isFainted()) {
+                int oldHealth = h.getHealth();
+                int oldMana = h.getMana();
                 h.revive();
+                int newHealth = h.getHealth();
+                int newMana = h.getMana();
+                System.out.println("Fainted hero " + h.getName() + " revives with 50% of their max HP [" 
+                        + h.getMaxHealth() + "] & MP [" + h.getMaxMana() +"]" + "HP: " + oldHealth + "->" + newHealth
+                        + "MP: " + oldMana + "->" + newMana);
             }
         }
     }
@@ -76,7 +90,10 @@ public class HeroParty {
     public void gainGold(int gold) {
         for (Hero h : party) {
             if (!h.isFainted()) {
+                int oldGold = h.getGold();
                 h.gainGold(gold);
+                int newGold = h.getGold();
+                System.out.println(h.getName() + "Gold: (" + oldGold + "->"+ newGold + ")");
             }
         }
     }
@@ -89,29 +106,31 @@ public class HeroParty {
             System.out.println("Which item would you like to equip? Or none [-1]");
             List<Item> inventory = h.getInventory();
             int userInput = input.getInt(-1, inventory.size() - 1);
+            if (userInput == -1) {
+                continue;
+            }
+            
             Item selectedItem = inventory.get(userInput);
             if (selectedItem instanceof Spell) {
                 System.out.println("You can't equip a spell!");
             } else if (selectedItem instanceof Armor) {
                 boolean equipSuccess = h.useOrEquipItem((Armor) selectedItem);
-                if (!equipSuccess) {
-                    System.out.println("You already have armor equipped!");
-                } else {
+                if (equipSuccess) {
                     System.out.println("Successfully equipped armor " + selectedItem.getName());
                 }
             } else if (selectedItem instanceof Weapon) {
                 boolean equipSuccess = h.useOrEquipItem((Weapon) selectedItem);
-                if (!equipSuccess) {
-                    System.out.println("You don't have enough free hands to equip this weapon!");
-                } else {
+                if (equipSuccess) {
                     System.out.println("Successfully equipped weapon " + selectedItem.getName());
                 }
             } else if (selectedItem instanceof Potion) {
                 Potion selectedPotion = (Potion) selectedItem;
-                h.useOrEquipItem(selectedPotion);
-                System.out.println("Hero " + h.getName() + " used " + selectedPotion.getName()
+                if (h.useOrEquipItem(selectedPotion)) {
+                    System.out.println("Hero " + h.getName() + " used " + selectedPotion.getName()
                     + " and increased " + selectedPotion.getAffectedAttributes() + " by " 
                     + selectedPotion.getAttributeIncrease());
+                }
+                
             } else {
                 System.out.println("[Debug]: No case specified for this item type!");
             }

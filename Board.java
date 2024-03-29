@@ -6,6 +6,11 @@ public class Board {
         populateBoard();
     }
 
+    public Board(int size) {
+        board = new Grid[size][size];
+        populateBoard();
+    }
+
     private void populateBoard() {
         int rows = board.length;
         int cols = board[0].length;

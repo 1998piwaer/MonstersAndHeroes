@@ -32,8 +32,10 @@ public class MonstersAndHeroes implements Playable {
             hs.add("w");
             hs.add("p");
             hs.add("s");
+            playerParty = new HeroParty();
             for (int i = 0; i < partySize; i++) {
-                System.out.println("What class of hero would you like? Warrior [W], Palandin [P], Sorcerer [S]");
+                
+                System.out.println("What class of hero would you like? Warrior [W], Palandin [P], Sorcerer [S] " + Settings.MIN_PARTY_SIZE + "-" + Settings.MAX_PARTY_SIZE);
                 String heroClass = input.getString(hs);
                 if (heroClass == "w") {
                     playerParty.addPartyMember(Hero.createRandomHeroFromFile(new WarriorCombatBehavior()));
@@ -43,6 +45,13 @@ public class MonstersAndHeroes implements Playable {
                     playerParty.addPartyMember(Hero.createRandomHeroFromFile(new SorcererCombatBehavior()));
                 }
             }
+            System.out.println("What board size would you like? " + Settings.MIN_BOARD_SIZE + "-" + Settings.MAX_BOARD_SIZE);
+            int size = input.getInt(Settings.MIN_BOARD_SIZE, Settings.MAX_BOARD_SIZE);
+            board = new Board(size);
+
+            do {
+                playerParty.initPartyCoordinates(size, size);
+            } while (board.getGrid(playerParty.getHeroPartyRow(), playerParty.getHeroPartyCol()).getType() == Settings.INACCESSIBLE);
         }
     }
 
