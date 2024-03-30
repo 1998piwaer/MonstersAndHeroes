@@ -1,3 +1,12 @@
+ /*
+  * Monster.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * This class supports all methods that pertain to a single monster.
+  * It also includes a static method for generating a randomized monster.
+  */
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

@@ -1,3 +1,15 @@
+ /*
+  * DragonCombatBehavior.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * Implements the strategy pattern from CombatBehavior().
+  * Monsters can only attack so castSpell() should never be called, but
+  * this can easily be changed so that monsters could cast spells.
+  * Monsters can't level up either but can also easily be changed as well.
+  * We apply a type's advantage during calculation with AFFINITY_MULTIPLIER. 
+  */
+
 public class DragonCombatBehavior implements CombatBehavior {
     public int attack(int dmg) {
         return (int) (dmg * Settings.AFFINITY_MULTIPLIER);

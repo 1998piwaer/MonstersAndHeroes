@@ -1,4 +1,14 @@
-public class CommonSpace implements SpaceFactory {
+ /*
+  * CommonSpace.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * Implements the factory pattern from SpaceFactory.
+  * enter() triggers when a hero walks into a space and interact() triggers
+  * when a hero presses M on a space. CommonSpace is in charge of creating Combats.
+  */
+
+public class CommonSpace implements Space {
     Input input = Input.getSingletonInput();
     public void enter(HeroParty heroParty) {
         double r = Math.random();

@@ -1,3 +1,14 @@
+ /*
+  * MainMenu.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * This class represents the main menu. It contains the most basic
+  * menu and asks users for which game to play, which determines
+  * which game to initalize. By making all games implement Playable() interface,
+  * we just need to make simple modifications to add or replace games.
+  */
+
 public class MainMenu {
     private Input input;
     private final String[] GAMES = {"Legends: Monsters and Heroes"};

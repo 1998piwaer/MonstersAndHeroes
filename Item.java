@@ -1,3 +1,13 @@
+ /*
+  * Item.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * Abstract class that contains all attributes common to items (which include spell) such
+  * as cost, name, required levels, and requires that anything that extends it has proper printing
+  * mainly used in market and combat.
+  */
+
 public abstract class Item {
     private String name;
     private int cost;

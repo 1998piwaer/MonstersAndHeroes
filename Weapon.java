@@ -1,3 +1,12 @@
+ /*
+  * Weapon.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * Extends Item.java and has all logic and state regarding a weapon,
+  * such as checking requirements, displaying, using, and its effects.
+  */
+
 public class Weapon extends Item {
     private int damageAmplification;
     private int requiredHands;

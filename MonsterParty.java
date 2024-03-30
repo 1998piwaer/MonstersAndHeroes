@@ -1,3 +1,14 @@
+ /*
+  * MonsterParty.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * This class supports all methods that pertain to a group of monsters.
+  * I create a class rather than just having a list of monsters so that
+  * I can handle party wide methods such as printing.
+  */
+
+
 import java.util.*;
 
 public class MonsterParty {

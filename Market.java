@@ -1,3 +1,13 @@
+ /*
+  * Market.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * This class contains all methods regarding the state of the market.
+  * Each MarketSpace has one Market that's created during initialization of the space, 
+  * meaning if a market is out of items in in its catalog, it will remain empty.
+  */
+
 import java.util.*;
 public class Market {
     private List<Item> catalog;

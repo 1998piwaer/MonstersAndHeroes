@@ -1,5 +1,17 @@
+ /*
+  * MarketSpace.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * Implements the factory pattern from SpaceFactory.
+  * enter() triggers when a hero walks into a space and interact() triggers
+  * when a hero presses M on a space. MarketSpace is in charge of holding a market
+  * and handling inputs regarding a market. Internals of the market is stored in the Market
+  * object.
+  */
+
 import java.util.*;
-public class MarketSpace implements SpaceFactory {
+public class MarketSpace implements Space {
     private Market market;
     private Input input = Input.getSingletonInput();
 

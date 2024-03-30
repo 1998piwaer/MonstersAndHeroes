@@ -1,3 +1,12 @@
+ /*
+  * Board.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * Handles initiazliation of board such as populating the board with the proper
+  * spaces. Also has general getter methods.
+  */
+
 public class Board {
     private Grid[][] board;
 

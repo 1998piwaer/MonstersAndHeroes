@@ -1,3 +1,13 @@
+ /*
+  * Spell.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * Extends Item.java and has all logic and state regarding a spell,
+  * such as checking requirements, displaying, using, and its effects.
+  * A spell's type effect is listed in Combat.java
+  */
+
 public class Spell extends Item {
     private int damage;
     private int manaCost;

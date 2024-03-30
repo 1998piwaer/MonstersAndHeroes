@@ -7,7 +7,7 @@ Student information:
 Design Patterns Used:
     Input: Singleton
     CombatBehavior: Strategy Pattern
-    SpaceFactory: Factory Pattern
+    Space: ???
     ItemFactory: Factory Pattern
 
 File information
@@ -69,8 +69,9 @@ Notes
     - All balancing related things are stored in Settings.java. If the game is too hard or easy,
         or if you want to test specific portions, modify Settings.java.
     - Can quit out at any point with "Q"
-    - If game doesn't fit on screen, or if you want to see previous outputs change Settings.java's 
-        clearTerminal() to simply System.out.println();
+    - If game doesn't fit on screen (especially if there are a lot of items in the inventory), 
+        If you want to see previous outputs change the contents of Settings.java's 
+        clearTerminal() method to simply System.out.println();
     - You can run away from encounters as well, where heroes won't be revived.
 
 Compilation and run directions for the terminal

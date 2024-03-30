@@ -1,3 +1,14 @@
+ /*
+  * HeroParty.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * This class supports all methods that pertain to a group of heroes.
+  * I create a class rather than just having a list of heroes so that
+  * I can handle party wide methods and also have partywide state such as
+  * their coordinates rather than having to store coordinates for each hero, etc.
+  */
+
 import java.util.*;
 
 public class HeroParty {

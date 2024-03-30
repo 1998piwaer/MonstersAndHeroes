@@ -1,3 +1,11 @@
+ /*
+  * ArmorFactory.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * Handles parsing and creation of Armor from Armory.txt. Part of the Factory Pattern.
+  */
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

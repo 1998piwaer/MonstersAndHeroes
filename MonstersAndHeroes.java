@@ -1,3 +1,14 @@
+ /*
+  * MonstersAndHeroes.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * This class supports all methods and state regarding MonstersAndHeroes.
+  * Implements Playable interface to make it easy in MainMenu for setup.
+  * Handles most logic regarding overworld such as visualization, traveling,
+  * and controls when a party is in the overworld.
+  */
+
 import java.util.*;
 
 public class MonstersAndHeroes implements Playable {

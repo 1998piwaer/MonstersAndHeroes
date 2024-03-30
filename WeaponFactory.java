@@ -1,3 +1,13 @@
+ /*
+  * WeaponFactory.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * Utilizes Factory pattern and creates an instance of a weapon,
+  * which can easily be used in a market, as ItemFactory's createItem()
+  * returns a item. Weapon extends Item so this is usable.
+  */
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

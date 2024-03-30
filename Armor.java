@@ -1,3 +1,12 @@
+ /*
+  * Armor.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * This class supports all methods that pertain to common attributes of armor
+  * and handles displaying of information regarding armor.
+  */
+
 public class Armor extends Item {
     private int damageReduction;
 

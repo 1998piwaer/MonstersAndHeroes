@@ -1,3 +1,12 @@
+ /*
+  * Hero.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * This class supports all methods that pertain to a single hero.
+  * It also includes a static method for generating a randomized hero.
+  */
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -6,7 +15,11 @@ import java.util.List;
 import java.util.Random;
 
 public class Hero extends Entity {
-    private static final int DEFAULT_DEFENSE = 500;
+    private static final int DEFAULT_DEFENSE = Settings.HERO_DEFAULT_DEFENSE;
+    // As mentioned in Attribute.java, there are some attributes of a hero that
+    // gets modified in percentages and flat amounts depending on if they're leveling up, etc
+    // rather than redefining a new method for each of these attributes, we can simply make a
+    // a method that takes in a attribute.
     private Attribute strength;
     private Attribute dexterity;
     private Attribute agility;
@@ -57,14 +70,14 @@ public class Hero extends Entity {
             defense = DEFAULT_DEFENSE + armor.getDamageReduction();
             return true;
         }
-        
-
     }
 
     public Armor getArmor() {
         return armor;
     }
 
+    // Although useOrEquipItem having a new method for each type of item may seem repetitive,
+    // all items have unique checks and it is necessary we do this.
     public boolean useOrEquipItem(Weapon weapon) {
         if (weapon.getRequiredLevel() > level) {
             System.out.println(name + " (lvl " + level + ") is underleveled for the item! Required Level: " + armor.getRequiredLevel());
@@ -115,6 +128,7 @@ public class Hero extends Entity {
         }
     }
 
+    // Generic method used in combat for if they want to use a potion, equip armor, etc.
     public <T extends Item> List<T> getItemsOfType(Class<T> itemType) {
         List<T> items = new ArrayList<>();
         for (Item i : inventory) {
@@ -125,6 +139,7 @@ public class Hero extends Entity {
         return items;
     }
 
+    // Called from Market.java
     public void sellItem(int index) {
         Item itemToSell = inventory.get(index);
         gold += itemToSell.getCost() / 2;
@@ -186,6 +201,7 @@ public class Hero extends Entity {
 
     private void levelUp() {
         System.out.println("Hero " + name + " leveled up! (" + level + "->" + (++level) + ")");
+        // Again with attributes, we lower the code chunk below from many lines to 5 lines.
         maxHealth.increaseValuePercentage(Settings.LEVELUP_MULTIPLIER);
         maxMana.increaseValuePercentage(Settings.LEVELUP_MULTIPLIER);
         strength.increaseValuePercentage(Settings.LEVELUP_MULTIPLIER);
@@ -235,6 +251,10 @@ public class Hero extends Entity {
         this.mana += mana;
     }
 
+    public void deductMana(int mana) {
+        this.mana -= mana;
+    }
+
     public int getMaxMana() {
         return maxMana.getValue();
     }
@@ -261,7 +281,6 @@ public class Hero extends Entity {
         this.gold += gold;
     }
 
-    // Funcntion with assistance from Claude.Ai (regarding parsing from file)
     public static Hero createRandomHeroFromFile(CombatBehavior cb) {
         String fileName = "";
         List<String> heroes = new ArrayList<>();

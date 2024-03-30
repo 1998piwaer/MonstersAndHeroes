@@ -1,3 +1,14 @@
+ /*
+  * PaladinCombatBehavior.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * Implements the strategy pattern from CombatBehavior().
+  * We apply a type's advantage during calculation with AFFINITY_MULTIPLIER. 
+  * Does all caclulations regarding how much damage a hero should do or take given
+  * a hero's type. This also includes their level up bonuses.
+  */
+
 public class PaladinCombatBehavior implements CombatBehavior {
 
     public int attack(int dmg) {

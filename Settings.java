@@ -10,6 +10,7 @@ public class Settings {
     public static final float STRENGTH_TO_ATTACK_DAMAGE_RATIO = 0.05f;
     public static final float AGILITY_TO_DODGE_CHANCE_RATIO = 0.00005f;
     public static final float LEVELUP_MULTIPLIER = 0.05f;
+    public static final int HERO_DEFAULT_DEFENSE = 500;
 
     // Used in Monster.java
     public static final float DODGE_CHANCE_RATIO = 0.002f;

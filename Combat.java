@@ -1,3 +1,11 @@
+ /*
+  * Combat.java
+  * by Simon Kye (simonkye@bu.edu)
+  * 3/30/2024
+  *
+  * Handles all logic regarding combat, which is created from CommonSpace's enter() method.
+  */
+
 import java.util.*;
 public class Combat {
     private HeroParty heroParty;
@@ -18,6 +26,8 @@ public class Combat {
         for (Hero h : heroList) {
             maxHeroLevel = Math.max(h.getLevel(), maxHeroLevel);
         }
+        // Combat initalizes a new instance of monster party, meaning even if you cleared
+        // this space from a encouter before, you could run into a encounter again.
         this.monsterParty = new MonsterParty(heroParty.size(), maxHeroLevel);
         this.monsterList = monsterParty.getMonsterParty();
         this.potentialExp = monsterParty.size() * 2;
@@ -48,6 +58,9 @@ public class Combat {
             
             String action = "";
             do {
+                // action is ACTION_INCOMPLETED if a user inputs a invalid action.
+                // This means it won't consume a hero's turn if a user does a invalid input
+                // such as trying to cast spells when the hero doesn't have any spells, etc.
                 if (action == ACTION_INCOMPLETED) {
                     System.out.println("Input any key to continue");
                     input.getString();
@@ -59,6 +72,8 @@ public class Combat {
                         + " Check Party Information [I], Run Away! [R]");
                 action = input.getString(hs);
                 if (action.equals("a")) {
+                    // All these actions return false if they do a invalid action as specified
+                    // in the comment above (or press "-1" to go back)
                     if(!performAttack(currHero)) {
                         action = ACTION_INCOMPLETED;
                     }
@@ -67,10 +82,13 @@ public class Combat {
                         action = ACTION_INCOMPLETED;
                     }
                 } else if (action.equals("p")) {
+                    // I pass in classes so that we can create a generic method of useOrEquipItem, 
+                    // rather than doing multiple instanceof checks.
                     if (!useOrEquipItem(currHero, Potion.class)) {
                         action = ACTION_INCOMPLETED;
                     }
                 } else if (action.equals("e")) {
+                    // getItemsOfType is also a generic method
                     List<Armor> armorLs = currHero.getItemsOfType(Armor.class);
                     List<Weapon> weaponLs = currHero.getItemsOfType(Weapon.class);
                     if (!armorLs.isEmpty() || !weaponLs.isEmpty()) {
@@ -87,8 +105,8 @@ public class Combat {
                 } else if (action.equals("r")) {
                     if (Math.random() < Settings.RUN_SUCCESS_CHANCE) {
                         run = true;
-                        action = ACTION_INCOMPLETED;
                     } else {
+                        // Trying to run consumes a turn
                         Settings.clearTerminal();
                         System.out.println("The party couldn't escape");
                     }
@@ -96,6 +114,7 @@ public class Combat {
                 if (isCompleted() != 0) {
                     break;
                 }
+            // Keep asking for said hero if hero checked party state with 'i' or did invalid action
             } while (action.equals("i") || action.equals(ACTION_INCOMPLETED));
         }
         if (isCompleted() == 0) {
@@ -164,6 +183,9 @@ public class Combat {
         }
     }
 
+    // Used Class to enable this generic method to work, otherwise I run into the issue of
+    // the type being sent in being of type Item rather than the specific class.
+    // This prevents the method having to be rewritten for each class that extends Item.
     private <T extends Item> boolean useOrEquipItem(Hero hero, Class<T> itemType) {
         List<T> availableItems = hero.getItemsOfType(itemType);
         String itemTypeName= itemType.getSimpleName();
@@ -186,6 +208,7 @@ public class Combat {
         }
     }
 
+    // Same comment as above, prevents repetitive code.
     private <T extends Item> void printAvailableItems(List<T> items, String typeName) {
         for (int i = 0; i < items.size(); i++) {
             T p = items.get(i);
@@ -194,6 +217,10 @@ public class Combat {
         }
     }
 
+    // Note: Sometimes, a user inputs "-1" or "B" to go back, it depends on the type being asked for.
+    // To make the user go back when "B" is typed in even though we're expecting a integer could be done
+    // but would require a lot more code and thought as long as I specified how the user should go back,
+    // it should be fine.
     private boolean equip(Hero hero) {
         System.out.println("Would you like to equip an armor [A] or weapon [W] or go back [B]?");
         Set<String> hs = new HashSet<>();
@@ -221,6 +248,9 @@ public class Combat {
         }
     }
 
+    // Cast spell is distinct from performAttack() as there are a lot more checks to be done compared
+    // to simply doing a normal attack. This includes seeing if spells even exist in a hero's inventory
+    // or if the mana costs are met, etc.
     private boolean castSpell(Hero hero) {
         CombatBehavior heroCb = hero.getCombatBehavior();
         List<Spell> availableSpells = hero.getItemsOfType(Spell.class);
@@ -229,57 +259,70 @@ public class Combat {
             System.out.println("Hero " + hero.getName() + " has no spells available!");
             return false;
         } else {
-                System.out.println("Which spell would you like to cast? Or go back? [-1]");
-                System.out.println("Available spells for Hero " + hero.getName());
-                printAvailableSpells(availableSpells);
-                int selectedSpellIndex = input.getInt(-1, availableSpells.size() - 1);
-                if (selectedSpellIndex == -1) {
-                    return false;
-                }
-                Spell selectedSpell = availableSpells.get(selectedSpellIndex);
-                if (selectedSpell.getRequiredLevel() > hero.getLevel()) {
-                    System.out.println(hero.getName() + " (lvl " + hero.getLevel() + ") is "
-                    + "underleveled for the item! Required Level: " + selectedSpell.getRequiredLevel());
-                    return false;
-                }
-                System.out.println("Which monster would you like to attack? Or go back? [-1]");
-                monsterParty.printMonsterParty();
-                int target = input.getInt(-1, monsterParty.size() - 1);
-                if (target == -1) {
-                    return false;
-                }
-                Monster targetMonster = monsterParty.getMonsterParty().get(target);
-                CombatBehavior monsterCb = targetMonster.getCombatBehavior();
+            Settings.clearTerminal();
+            System.out.println("Which spell would you like to cast? Or go back? [-1]");
+            System.out.println("Available spells for Hero " + hero.getName());
+            printAvailableSpells(availableSpells);
+            int selectedSpellIndex = input.getInt(-1, availableSpells.size() - 1);
+            if (selectedSpellIndex == -1) {
+                return false;
+            }
+            Spell selectedSpell = availableSpells.get(selectedSpellIndex);
+            if (selectedSpell.getRequiredLevel() > hero.getLevel()) {
+                System.out.println(hero.getName() + " (lvl " + hero.getLevel() + ") is "
+                + "underleveled for the item! Required Level: " + selectedSpell.getRequiredLevel());
+                return false;
+            }
+            if (selectedSpell.getManaCost() > hero.getMana()) {
+                System.out.println(hero.getName() + " (Mana: " + hero.getMana() + ") has "
+                + "too little MP for the spell! Required Mana: " + selectedSpell.getManaCost());
+                return false;
+            }
 
-                String type = selectedSpell.getType();
-                if (type.equals("Fire")) {
-                    targetMonster.tankFire();
-                } else if (type.equals("Ice")) {
-                    targetMonster.tankIce();
-                } else if (type.equals("Lightning")) {
-                    targetMonster.tankLightning();
-                } else {
-                    System.out.println("[Debug]: Unknown spell type!");
-                }
-                
-                int herosSpellDamage = (int) (selectedSpell.getDamage() + 
-                        (hero.getDexterity() / 10000) * selectedSpell.getDamage());
-                int damage = monsterCb.tank(heroCb.attack(herosSpellDamage), targetMonster.getDefense(),
-                        targetMonster.getDodgeChance() * Settings.DODGE_CHANCE_RATIO);
-                
-                targetMonster.takeDamage(damage);
-                System.out.println("Hero " + hero.getName() + " cast " + selectedSpell.getName()
-                        + " at Monster " + targetMonster.getName() + " for " + damage + " damage!");
-        
-                if (targetMonster.isFainted()) {
-                    System.out.println("Monster " + targetMonster.getName() + " has fainted!");
-                    monsterParty.removeMonster(target);
-                }
+            System.out.println("Which monster would you like to attack? Or go back? [-1]");
+            monsterParty.printMonsterParty();
+            int target = input.getInt(-1, monsterParty.size() - 1);
+            if (target == -1) {
+                return false;
+            }
+            Monster targetMonster = monsterParty.getMonsterParty().get(target);
+            CombatBehavior monsterCb = targetMonster.getCombatBehavior();
+            hero.deductMana(selectedSpell.getManaCost());
+            String type = selectedSpell.getType();
+            if (type.equals("Fire")) {
+                targetMonster.tankFire();
+            } else if (type.equals("Ice")) {
+                targetMonster.tankIce();
+            } else if (type.equals("Lightning")) {
+                targetMonster.tankLightning();
+            } else {
+                System.out.println("[Debug]: Unknown spell type!");
+            }
+            
+            int herosSpellDamage = (int) (selectedSpell.getDamage() + 
+                    (hero.getDexterity() / 10000) * selectedSpell.getDamage());
+
+            // We use the combat behaviors to calculate given a hero's flat spell damage, how much it should
+            // deal given a hero's class (sorcerer does more spell damage). And given a monster's defense,
+            // how much damage they should take.
+            int damage = monsterCb.tank(heroCb.castSpell(herosSpellDamage), targetMonster.getDefense(),
+                    targetMonster.getDodgeChance() * Settings.DODGE_CHANCE_RATIO);
+            
+            // After the calculation is done from the combatBehaviors, the monster takes the calculated damage
+            targetMonster.takeDamage(damage);
+            System.out.println("Hero " + hero.getName() + " cast " + selectedSpell.getName()
+                    + " at Monster " + targetMonster.getName() + " for " + damage + " damage!");
+    
+            if (targetMonster.isFainted()) {
+                System.out.println("Monster " + targetMonster.getName() + " has fainted!");
+                monsterParty.removeMonster(target);
+            }
         }
         return true;
         
     }
 
+    // Seperate methods compared to other items as spells don't want to be listed as "Items" technically
     private void printAvailableSpells(List<Spell> spells) {
         for (int i = 0; i < spells.size(); i++) {
             Spell s = spells.get(i);
@@ -291,13 +334,16 @@ public class Combat {
     private void performAttack(Monster monster) {
         CombatBehavior monsterCb = monster.getCombatBehavior();
         Random random = new Random();
+        // We do hashset as even if a hero faints, they're not removed from the HeroParty list.
+        // so we don't want to use a range of valid numbers as it could include a fainted hero.
         Set<Integer> hs = heroParty.getAliveHeroesIndices();
 
-        //https://www.geeksforgeeks.org/how-to-get-random-elements-from-java-hashset/
+        // Source: https://www.geeksforgeeks.org/how-to-get-random-elements-from-java-hashset/
         Integer[] arrayNumbers = hs.toArray(new Integer[hs.size()]);
         int target = random.nextInt(hs.size()); 
         Hero targetHero = heroParty.getHeroParty().get(arrayNumbers[target]);
 
+        // Same logic of damage calculation as mentioned in castSpell()
         CombatBehavior heroCb = targetHero.getCombatBehavior();
         int damage = heroCb.tank(monsterCb.attack(monster.getAttackDamage()), targetHero.getDefense(),
                 targetHero.getAgility() * Settings.AGILITY_TO_DODGE_CHANCE_RATIO);
@@ -325,10 +371,10 @@ public class Combat {
         Settings.clearTerminal();
         if (hero.getWeapon() != null) {
             weaponDamage = (int) (hero.getWeapon().getDamageAmplification() * Settings.STRENGTH_TO_ATTACK_DAMAGE_RATIO);
-            herosAttackDamage = hero.getStrength();
-        } else {
-            herosAttackDamage = hero.getStrength();
         }
+        herosAttackDamage = hero.getStrength();
+        
+        // Same logic of damage calculation as mentioned in castSpell()
         int damage = monsterCb.tank(heroCb.attack(herosAttackDamage + weaponDamage), targetMonster.getDefense(), 
                 targetMonster.getDodgeChance()  * Settings.DODGE_CHANCE_RATIO);
         
@@ -355,6 +401,9 @@ public class Combat {
     public void heroVictory() {
         System.out.println("Alive party members gained " + potentialGold + " gold");
         heroParty.gainGold(potentialGold);
+
+        // Important this method occurs before revive as regain hp & mp only occurs to alive
+        // party members. We don't want to revive dead members and also give them 10% HP & MP.
         heroParty.endBattleRegainHpMp();
         heroParty.reviveIfFainted();
         System.out.println("The whole party gained " + potentialExp + " exp");
