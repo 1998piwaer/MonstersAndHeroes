@@ -11,7 +11,7 @@
 
 public class MainMenu {
     private Input input;
-    private final String[] GAMES = {"Legends: Monsters and Heroes"};
+    private final String[] GAMES = {"Legends: Monsters and Heroes", "Legends of Valor"};
 
     public MainMenu() {
         input = Input.getSingletonInput();
@@ -30,6 +30,8 @@ public class MainMenu {
         // Replace this portion with any game of your choosing
         if (gameSelection == 0) {
             game = new MonstersAndHeroes();
+        } else if (gameSelection == 1) {
+            game = new LegendsOfValor();
         }
         game.initalize();
         game.playGame();

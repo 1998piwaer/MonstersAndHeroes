@@ -1,15 +1,6 @@
- /*
-  * Grid.java
-  * by Simon Kye (simonkye@bu.edu)
-  * 3/30/2024
-  *
-  * This class supports all methods that pertain to a single grid.
-  * This includes what type of space it is and how to print it.
-  */
-
-public class Grid {
+public class MaHGrid implements GridInterface {
     private Space space;
-    public Grid(Space space) {
+    public MaHGrid(Space space) {
         this.space = space;
     }
     

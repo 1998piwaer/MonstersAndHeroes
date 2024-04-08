@@ -14,7 +14,7 @@ import java.util.*;
 public class MonstersAndHeroes implements Playable {
     private HeroParty playerParty;
     private Input input = Input.getSingletonInput();
-    private Board board;
+    private BoardInterface board;
     private final static int INACCESSIBLE = -1;
     private boolean inCombat;
     public MonstersAndHeroes() {
@@ -32,7 +32,7 @@ public class MonstersAndHeroes implements Playable {
             playerParty.addPartyMember(Hero.createRandomHeroFromFile(new PaladinCombatBehavior()));
             playerParty.addPartyMember(Hero.createRandomHeroFromFile(new SorcererCombatBehavior()));
 
-            board = new Board();
+            board = new MaHBoard();
             do {
                 playerParty.initPartyCoordinates(Settings.DEFAULT_NUM_ROWS, Settings.DEFAULT_NUM_COLS);
             } while (board.getGrid(playerParty.getHeroPartyRow(), playerParty.getHeroPartyCol()).getType() == Settings.INACCESSIBLE);
@@ -58,7 +58,7 @@ public class MonstersAndHeroes implements Playable {
             }
             System.out.println("What board size would you like? " + Settings.MIN_BOARD_SIZE + "-" + Settings.MAX_BOARD_SIZE);
             int size = input.getInt(Settings.MIN_BOARD_SIZE, Settings.MAX_BOARD_SIZE);
-            board = new Board(size);
+            board = new MaHBoard(size);
 
             do {
                 playerParty.initPartyCoordinates(size, size);

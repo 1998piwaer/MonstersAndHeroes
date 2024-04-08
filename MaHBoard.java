@@ -7,16 +7,16 @@
   * spaces. Also has general getter methods.
   */
 
-public class Board {
-    private Grid[][] board;
+public class MaHBoard implements BoardInterface {
+    private GridInterface[][] board;
 
-    public Board() {
-        board = new Grid[Settings.DEFAULT_NUM_ROWS][Settings.DEFAULT_NUM_COLS];
+    public MaHBoard() {
+        board = new GridInterface[Settings.DEFAULT_NUM_ROWS][Settings.DEFAULT_NUM_COLS];
         populateBoard();
     }
 
-    public Board(int size) {
-        board = new Grid[size][size];
+    public MaHBoard(int size) {
+        board = new GridInterface[size][size];
         populateBoard();
     }
 
@@ -27,17 +27,17 @@ public class Board {
             for (int j = 0; j < cols; j++) {
                 double roll = Math.random();
                 if (roll < Settings.INACCESSIBLE_SPACE_PROPORTION) {
-                    board[i][j] = new Grid(new InaccessibleSpace());
+                    board[i][j] = new MaHGrid(new InaccessibleSpace());
                 } else if (roll < Settings.INACCESSIBLE_SPACE_PROPORTION + Settings.MARKET_SPACE_PROPORTION) {
-                    board[i][j] = new Grid(new MarketSpace());
+                    board[i][j] = new MaHGrid(new MarketSpace());
                 } else {
-                    board[i][j] = new Grid(new CommonSpace());
+                    board[i][j] = new MaHGrid(new CommonSpace());
                 }
             }
         }
     }
 
-    public Grid getGrid(int r, int c) {
+    public GridInterface getGrid(int r, int c) {
         return board[r][c];
     }
 

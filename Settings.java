@@ -1,4 +1,15 @@
 public class Settings {
+    public static final int DEFAULT_LEGENDS_OF_VALOR_SIZE = 8;
+
+    // Must add up to 1, otherwise code may crash.
+    public static final float BUSH_SPACE_PROPORTION = 0.2f;
+    public static final float CAVE_SPACE_PROPORTION = 0.2f;
+    public static final float KOULOU_SPACE_PROPORTION = 0.2f;
+    public static final float PLAIN_SPACE_PROPORTION = 0.4f;
+
+    //////////////////////////////////////////////////////////////
+    // Monsters And Heroes Settings
+
     // Used in CombatBehaviors
     public static final float AFFINITY_MULTIPLIER = 1.5f;
     public static final float DEFENSE_EFFECTIVENESS = 0.5f;
