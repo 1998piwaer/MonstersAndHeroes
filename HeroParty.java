@@ -21,6 +21,10 @@ public class HeroParty implements PartyInterface {
         heroCoordinates = new HashMap<>();
     }
 
+    public Hero get(int i) {
+        return party.get(i);
+    }
+
 
     public Coordinate getPartyCoordinate(int index) {
         return heroCoordinates.get(party.get(index));

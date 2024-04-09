@@ -1,7 +1,7 @@
-- Initialization (correct monster party state and human state when spawned)
-- Visualization (should properly print the board)
-- Monster Party State (Should handle moving down & existing on a board [make them move one step down every turn])
-- Hero should be able to move (apply SpaceCombatBehavior), enter shop, equip (use spell), and teleport between lanes
-- Implement end game state if hero/monster reaches opposite ends
-- Handle creating combat when player & monster are adjacent (and how to handle other heroes "joining" the fight)
-- Create observer pattern for giving EXP to all heroes
+[ ] Initialization (correct monster party state and human state when spawned)
+[X] Visualization (should properly print the board)
+[ ] Monster Party State (Should handle moving down & existing on a board [make them move one step down every turn])
+[ ] Hero should be able to move (apply SpaceCombatBehavior), enter shop, equip (use spell), and teleport between lanes
+[ ] Implement end game state if hero/monster reaches opposite ends
+[ ] Handle creating combat when player & monster are adjacent (and how to handle other heroes "joining" the fight)
+[ ] Create observer pattern for giving EXP to all heroes

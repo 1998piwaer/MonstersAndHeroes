@@ -31,6 +31,10 @@ public class Coordinate {
         return Objects.hash(row, col);
     }
 
+    public String toString() {
+        return "(" + row + ", " + col + ")";
+    }
+
     public void setRow(int r) {
         row = r;
     }

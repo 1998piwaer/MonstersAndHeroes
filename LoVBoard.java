@@ -36,14 +36,12 @@ public class LoVBoard implements Board {
             if (i == 2 || i == 5) {
                 continue;
             }
-            System.out.println("" + 0 + i);
-            System.out.println("" + (board.length - 1) + i);
             board[0][i] = new LoVGrid(new MarketNexusSpace());
             board[board.length - 1][i] = new LoVGrid(new MarketNexusSpace());
         }
     }
 
-    public Grid getGrid(int r, int c) {
+    public LoVGrid getGrid(int r, int c) {
         return board[r][c];
     }
 
