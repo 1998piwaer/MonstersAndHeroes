@@ -1,11 +1,11 @@
 import java.util.*;
 
 public class LoVBoard implements Board {
-    private Grid[][] board;
+    private LoVGrid[][] board;
     private Map<Integer, Coordinate> nexusCoordinates;
 
     public LoVBoard() {
-        board = new Grid[Settings.DEFAULT_LEGENDS_OF_VALOR_SIZE][Settings.DEFAULT_LEGENDS_OF_VALOR_SIZE];
+        board = new LoVGrid[Settings.DEFAULT_LEGENDS_OF_VALOR_SIZE][Settings.DEFAULT_LEGENDS_OF_VALOR_SIZE];
         nexusCoordinates = new HashMap<>();
         populateBoard();
     }
