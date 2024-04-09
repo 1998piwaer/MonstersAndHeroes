@@ -32,10 +32,12 @@ public class LoVBoard implements Board {
                 }
             }
         }
-        for (int i = 0; i < Settings.NUM_LANES; i++) {
+        for (int i = 0; i < board[0].length; i++) {
             if (i == 2 || i == 5) {
                 continue;
             }
+            System.out.println("" + 0 + i);
+            System.out.println("" + (board.length - 1) + i);
             board[0][i] = new LoVGrid(new MarketNexusSpace());
             board[board.length - 1][i] = new LoVGrid(new MarketNexusSpace());
         }

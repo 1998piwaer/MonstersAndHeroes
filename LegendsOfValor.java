@@ -44,7 +44,7 @@ public class LegendsOfValor implements Playable {
             for (int j = 0; j < 2; j++) {
                 int r = board.getRows() - 1;
                 System.out.println("" + r + (heroLane * 3 + j));
-                board.getGrid(r, heroLane * 3 + j);
+                board.getGrid(r, heroLane * 3 + j).getSpace();
                 MarketNexusSpace nexusSpace = (MarketNexusSpace) board.getGrid(r, heroLane * 3 + j).getSpace();
                 nexusSpace.setOwnership(hero);
                 Coordinate coord = new Coordinate(r, heroLane * 3 + j);
@@ -60,12 +60,13 @@ public class LegendsOfValor implements Playable {
     private void visualize() {
         int rows = board.getRows();
         int cols = board.getCols();
-        Map<Coordinate, String> hm = new HashMap<>();
+        Map<Coordinate, String> heroHashMap = new HashMap<>();
+        Map<Coordinate, String> monsterHashMap = new HashMap<>();
         for (int i = 0; i < playerParty.size(); i++) {
-            hm.put(playerParty.getPartyCoordinate(i), "H" + i);
+            heroHashMap.put(playerParty.getPartyCoordinate(i), "H" + i);
         }
         for (int i = 0; i < monsterParty.size(); i++) {
-            hm.put(monsterParty.getPartyCoordinate(i), "M" + i);
+            monsterHashMap.put(monsterParty.getPartyCoordinate(i), "M" + i);
         }
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -79,9 +80,9 @@ public class LegendsOfValor implements Playable {
             System.out.println();
             for (int j = 0; j < cols; j++) {
                 System.out.print("| ");
-                System.out.print(hm.getOrDefault(new Coordinate(i, j), "  "));
+                System.out.print(heroHashMap.getOrDefault(new Coordinate(i, j), "  "));
                 System.out.print(" ");
-                System.out.print(hm.getOrDefault(new Coordinate(i, j), "  "));
+                System.out.print(monsterHashMap.getOrDefault(new Coordinate(i, j), "  "));
                 System.out.print(" |");
                 System.out.print("  ");
             }
