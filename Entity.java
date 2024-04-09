@@ -10,12 +10,13 @@ public abstract class Entity {
     protected String name;
     protected int defense;
     protected int health;
-    protected CombatBehavior cb;
+    protected CombatBehavior classCombatBehavior;
+    protected CombatBehavior spaceCombatBehavior;
 
     protected Entity(String name, int defense, CombatBehavior cb) {
         this.name = name;
         this.defense = defense;
-        this.cb = cb;
+        this.classCombatBehavior = cb;
     }
 
     public int getHealth() {
@@ -30,7 +31,19 @@ public abstract class Entity {
         return defense;
     }
     
-    public CombatBehavior getCombatBehavior() {
-        return cb;
+    public CombatBehavior getClassCombatBehavior() {
+        return classCombatBehavior;
+    }
+
+    public void setClassCombatBehavior(CombatBehavior cb) {
+        this.classCombatBehavior = cb;
+    }
+
+    public CombatBehavior getSpaceCombatBehavior() {
+        return classCombatBehavior;
+    }
+
+    public void setSpaceCombatBehavior(CombatBehavior cb) {
+        this.classCombatBehavior = cb;
     }
 }

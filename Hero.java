@@ -207,8 +207,7 @@ public class Hero extends Entity {
         strength.increaseValuePercentage(Settings.LEVELUP_MULTIPLIER);
         dexterity.increaseValuePercentage(Settings.LEVELUP_MULTIPLIER);
         agility.increaseValuePercentage(Settings.LEVELUP_MULTIPLIER);
-
-        cb.applyLevelUpBonus(this);
+        classCombatBehavior.applyLevelUpBonus(this);
     }
 
     public List<Item> getInventory() {

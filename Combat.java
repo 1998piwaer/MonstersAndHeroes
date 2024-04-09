@@ -20,7 +20,7 @@ public class Combat {
     private Input input = Input.getSingletonInput();
     public Combat(HeroParty heroParty) {
         this.heroParty = heroParty;
-        this.heroList = heroParty.getHeroParty();
+        this.heroList = heroParty.getParty();
         this.run = false;
         int maxHeroLevel = 0;
         for (Hero h : heroList) {
@@ -252,7 +252,7 @@ public class Combat {
     // to simply doing a normal attack. This includes seeing if spells even exist in a hero's inventory
     // or if the mana costs are met, etc.
     private boolean castSpell(Hero hero) {
-        CombatBehavior heroCb = hero.getCombatBehavior();
+        CombatBehavior heroCb = hero.getClassCombatBehavior();
         List<Spell> availableSpells = hero.getItemsOfType(Spell.class);
         
         if (availableSpells.isEmpty()) {
@@ -286,7 +286,7 @@ public class Combat {
                 return false;
             }
             Monster targetMonster = monsterParty.getMonsterParty().get(target);
-            CombatBehavior monsterCb = targetMonster.getCombatBehavior();
+            CombatBehavior monsterCb = targetMonster.getClassCombatBehavior();
             hero.deductMana(selectedSpell.getManaCost());
             String type = selectedSpell.getType();
             if (type.equals("Fire")) {
@@ -332,7 +332,7 @@ public class Combat {
     }
 
     private void performAttack(Monster monster) {
-        CombatBehavior monsterCb = monster.getCombatBehavior();
+        CombatBehavior monsterCb = monster.getClassCombatBehavior();
         Random random = new Random();
         // We do hashset as even if a hero faints, they're not removed from the HeroParty list.
         // so we don't want to use a range of valid numbers as it could include a fainted hero.
@@ -341,10 +341,10 @@ public class Combat {
         // Source: https://www.geeksforgeeks.org/how-to-get-random-elements-from-java-hashset/
         Integer[] arrayNumbers = hs.toArray(new Integer[hs.size()]);
         int target = random.nextInt(hs.size()); 
-        Hero targetHero = heroParty.getHeroParty().get(arrayNumbers[target]);
+        Hero targetHero = heroParty.getParty().get(arrayNumbers[target]);
 
         // Same logic of damage calculation as mentioned in castSpell()
-        CombatBehavior heroCb = targetHero.getCombatBehavior();
+        CombatBehavior heroCb = targetHero.getClassCombatBehavior();
         int damage = heroCb.tank(monsterCb.attack(monster.getAttackDamage()), targetHero.getDefense(),
                 targetHero.getAgility() * Settings.AGILITY_TO_DODGE_CHANCE_RATIO);
         targetHero.takeDamage(damage);
@@ -357,7 +357,7 @@ public class Combat {
 
     private boolean performAttack(Hero hero) {
         Settings.clearTerminal();
-        CombatBehavior heroCb = hero.getCombatBehavior();
+        CombatBehavior heroCb = hero.getClassCombatBehavior();
         System.out.println("Which monster would you like to attack? Or go back? [-1]");
         monsterParty.printMonsterParty();
         int target = input.getInt(-1, monsterParty.size() - 1);
@@ -365,7 +365,7 @@ public class Combat {
             return false;
         }
         Monster targetMonster = monsterParty.getMonsterParty().get(target);
-        CombatBehavior monsterCb = targetMonster.getCombatBehavior();
+        CombatBehavior monsterCb = targetMonster.getClassCombatBehavior();
         int herosAttackDamage;
         int weaponDamage = 0;
         Settings.clearTerminal();

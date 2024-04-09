@@ -7,6 +7,18 @@ public class Settings {
     public static final float KOULOU_SPACE_PROPORTION = 0.2f;
     public static final float PLAIN_SPACE_PROPORTION = 0.4f;
 
+
+    public static final int PLAIN_SPACE_TYPE = 0;
+    // Nexuses share the same tile type as Market and tile number 1 is RESERVED
+    public static final int CAVE_SPACE_TYPE = 2;
+    public static final int BUSH_SPACE_TYPE = 3;
+    public static final int KOULOU_SPACE_TYPE = 4;
+    public static final int INACCESSIBLE_SPACE_TYPE = -1;
+
+    public static final int DEFAULT_LOV_PARTY_SIZE = 3;
+    public static final int NUM_LANES = 3;
+
+
     //////////////////////////////////////////////////////////////
     // Monsters And Heroes Settings
 

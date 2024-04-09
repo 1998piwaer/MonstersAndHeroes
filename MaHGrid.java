@@ -1,6 +1,6 @@
-public class MaHGrid implements GridInterface {
-    private Space space;
-    public MaHGrid(Space space) {
+public class MaHGrid implements Grid {
+    private MaHSpace space;
+    public MaHGrid(MaHSpace space) {
         this.space = space;
     }
     
@@ -11,7 +11,7 @@ public class MaHGrid implements GridInterface {
     public void printGrid() {
         if (space instanceof CommonSpace) {
             System.out.print(" ");
-        } else if (space instanceof MarketSpace) {
+        } else if (space instanceof MarketNexusSpace) {
             System.out.print(Settings.MARKET_COLOR);
             System.out.print("M");
             System.out.print(Settings.DEFAULT_COLOR);
@@ -24,7 +24,7 @@ public class MaHGrid implements GridInterface {
             System.out.print("?");
         }
     }
-    public Space getSpace() {
+    public MaHSpace getSpace() {
         return space;
     }
 }

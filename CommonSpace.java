@@ -8,7 +8,7 @@
   * when a hero presses M on a space. CommonSpace is in charge of creating Combats.
   */
 
-public class CommonSpace implements Space {
+public class CommonSpace implements MaHSpace {
     Input input = Input.getSingletonInput();
     public void enter(HeroParty heroParty) {
         double r = Math.random();

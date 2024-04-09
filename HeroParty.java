@@ -11,23 +11,42 @@
 
 import java.util.*;
 
-public class HeroParty {
+public class HeroParty implements PartyInterface {
     private List<Hero> party;
-    private int row;
-    private int col;
     private Input input = Input.getSingletonInput();
+    private Map<Hero, Coordinate> heroCoordinates;
 
     public HeroParty() {
         party = new ArrayList<>();
+        heroCoordinates = new HashMap<>();
     }
+
+
+    public Coordinate getPartyCoordinate(int index) {
+        return heroCoordinates.get(party.get(index));
+    }
+
+    public void setPartyCoordinate(int index, Coordinate coord) {
+        heroCoordinates.put(party.get(index), coord);
+    }
+
+    public void initPartyCoordinates(int boardRow, int boardCol) {
+        int row = (int) (Math.random() * boardRow);
+        int col = (int) (Math.random() * boardCol);
+        for (Hero h : party) {
+            heroCoordinates.put(h, new Coordinate(row, col));
+        }
+    }
+
     
+    // ----- Monsters And Heroes -----
     public void displayPartyInformation() {
         Settings.clearTerminal();
         for (int i = 0; i < party.size(); i++) {
             Hero currentHero = party.get(i);
             System.out.println("----------------------");
             System.out.println("Hero " + i + " information:");
-            System.out.println("Name: " + currentHero.getCombatBehavior().getType() + " " 
+            System.out.println("Name: " + currentHero.getClassCombatBehavior().getType() + " " 
                     + currentHero.getName() + " (Lvl " + currentHero.getLevel() + ")");
             System.out.println("HP: " + currentHero.getHealth() + "; MP:" + currentHero.getMana());
             System.out.println("Strength: " + currentHero.getStrength() + "; Dexterity: " 
@@ -159,31 +178,11 @@ public class HeroParty {
         party.remove(index);
     }
 
-    public int getHeroPartyRow() {
-        return row;
-    }
-    public int getHeroPartyCol() {
-        return col;
-    }
-
-    public void setHeroPartyRow(int r) {
-        row = r;
-    }
-
-    public void setHeroPartyCol(int c) {
-        col = c;
-    }
-
-    public void initPartyCoordinates(int boardRow, int boardCol) {
-        row = (int) (Math.random() * boardRow);
-        col = (int) (Math.random() * boardCol);
-    }
-
     public int size() {
         return party.size();
     }
 
-    public List<Hero> getHeroParty() {
+    public List<Hero> getParty() {
         return party;
     }
 }

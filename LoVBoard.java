@@ -1,8 +1,12 @@
-public class LoVBoard implements BoardInterface {
-    private GridInterface[][] board;
+import java.util.*;
+
+public class LoVBoard implements Board {
+    private Grid[][] board;
+    private Map<Integer, Coordinate> nexusCoordinates;
 
     public LoVBoard() {
-        board = new GridInterface[Settings.DEFAULT_LEGENDS_OF_VALOR_SIZE][Settings.DEFAULT_LEGENDS_OF_VALOR_SIZE];
+        board = new Grid[Settings.DEFAULT_LEGENDS_OF_VALOR_SIZE][Settings.DEFAULT_LEGENDS_OF_VALOR_SIZE];
+        nexusCoordinates = new HashMap<>();
         populateBoard();
     }
 
@@ -11,20 +15,33 @@ public class LoVBoard implements BoardInterface {
             board[i][2] = new LoVGrid(new InaccessibleSpace());
             board[i][5] = new LoVGrid(new InaccessibleSpace());
         }
-        for (int i = 0; i < board.length; i++) {
+        for (int i = 1; i < board.length - 1; i++) {
             for (int j = 0; j < board[0].length; j++) {
                 if (j == 2 || j == 5) {
                     continue;
                 }
                 double roll = Math.random();
                 if (roll < Settings.PLAIN_SPACE_PROPORTION) {
-                    board[i][j] = new LovGrid()
+                    board[i][j] = new LoVGrid(new PlainSpace());
+                } else if (roll < Settings.PLAIN_SPACE_PROPORTION + Settings.CAVE_SPACE_PROPORTION) {
+                    board[i][j] = new LoVGrid(new CaveSpace());
+                } else if (roll < Settings.PLAIN_SPACE_PROPORTION + Settings.CAVE_SPACE_PROPORTION + Settings.BUSH_SPACE_PROPORTION) {
+                    board[i][j] = new LoVGrid(new BushSpace());
+                } else if (roll < Settings.PLAIN_SPACE_PROPORTION + Settings.CAVE_SPACE_PROPORTION + Settings.BUSH_SPACE_PROPORTION + Settings.KOULOU_SPACE_PROPORTION) {
+                    board[i][j] = new LoVGrid(new KoulouSpace());
                 }
             }
         }
+        for (int i = 0; i < Settings.NUM_LANES; i++) {
+            if (i == 2 || i == 5) {
+                continue;
+            }
+            board[0][i] = new LoVGrid(new MarketNexusSpace());
+            board[board.length - 1][i] = new LoVGrid(new MarketNexusSpace());
+        }
     }
 
-    public GridInterface getGrid(int r, int c) {
+    public Grid getGrid(int r, int c) {
         return board[r][c];
     }
 

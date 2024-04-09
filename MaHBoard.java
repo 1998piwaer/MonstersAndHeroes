@@ -7,16 +7,16 @@
   * spaces. Also has general getter methods.
   */
 
-public class MaHBoard implements BoardInterface {
-    private GridInterface[][] board;
+public class MaHBoard implements Board {
+    private MaHGrid[][] board;
 
     public MaHBoard() {
-        board = new GridInterface[Settings.DEFAULT_NUM_ROWS][Settings.DEFAULT_NUM_COLS];
+        board = new MaHGrid[Settings.DEFAULT_NUM_ROWS][Settings.DEFAULT_NUM_COLS];
         populateBoard();
     }
 
     public MaHBoard(int size) {
-        board = new GridInterface[size][size];
+        board = new MaHGrid[size][size];
         populateBoard();
     }
 
@@ -29,7 +29,7 @@ public class MaHBoard implements BoardInterface {
                 if (roll < Settings.INACCESSIBLE_SPACE_PROPORTION) {
                     board[i][j] = new MaHGrid(new InaccessibleSpace());
                 } else if (roll < Settings.INACCESSIBLE_SPACE_PROPORTION + Settings.MARKET_SPACE_PROPORTION) {
-                    board[i][j] = new MaHGrid(new MarketSpace());
+                    board[i][j] = new MaHGrid(new MarketNexusSpace());
                 } else {
                     board[i][j] = new MaHGrid(new CommonSpace());
                 }
@@ -37,7 +37,7 @@ public class MaHBoard implements BoardInterface {
         }
     }
 
-    public GridInterface getGrid(int r, int c) {
+    public MaHGrid getGrid(int r, int c) {
         return board[r][c];
     }
 

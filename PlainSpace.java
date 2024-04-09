@@ -1,13 +1,13 @@
-public class PlainSpace implements Space {
-    public void enter(HeroParty heroParty) {
-
+public class PlainSpace implements LoVSpace {
+    public void enter(Entity e) {
+        e.setSpaceCombatBehavior(new PlainCombatBehavior());
     }
 
-    public void interact(HeroParty heroParty) {
+    public void interact(Entity e) {
 
     }
 
     public int getSpaceType() {
-        return -1;
+        return Settings.PLAIN_SPACE_TYPE;
     }
 }

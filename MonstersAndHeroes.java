@@ -14,7 +14,7 @@ import java.util.*;
 public class MonstersAndHeroes implements Playable {
     private HeroParty playerParty;
     private Input input = Input.getSingletonInput();
-    private BoardInterface board;
+    private MaHBoard board;
     private final static int INACCESSIBLE = -1;
     private boolean inCombat;
     public MonstersAndHeroes() {
@@ -35,7 +35,7 @@ public class MonstersAndHeroes implements Playable {
             board = new MaHBoard();
             do {
                 playerParty.initPartyCoordinates(Settings.DEFAULT_NUM_ROWS, Settings.DEFAULT_NUM_COLS);
-            } while (board.getGrid(playerParty.getHeroPartyRow(), playerParty.getHeroPartyCol()).getType() == Settings.INACCESSIBLE);
+            } while (board.getGrid(playerParty.getPartyCoordinate(0).getRow(), playerParty.getPartyCoordinate(0).getCol()).getType() == Settings.INACCESSIBLE);
         } else {
             System.out.println("How many people do you want in your party?");
             int partySize = input.getInt(Settings.MIN_PARTY_SIZE, Settings.MAX_PARTY_SIZE);
@@ -48,6 +48,13 @@ public class MonstersAndHeroes implements Playable {
                 
                 System.out.println("What class of hero would you like? Warrior [W], Palandin [P], Sorcerer [S] " + Settings.MIN_PARTY_SIZE + "-" + Settings.MAX_PARTY_SIZE);
                 String heroClass = input.getString(hs);
+                if (heroClass.equals("w")) {
+                    playerParty.addPartyMember(Hero.createRandomHeroFromFile(new WarriorCombatBehavior()));
+                } else if (heroClass.equals("p")) {
+                    playerParty.addPartyMember(Hero.createRandomHeroFromFile(new PaladinCombatBehavior()));
+                } else if (heroClass.equals("s")) {
+                    playerParty.addPartyMember(Hero.createRandomHeroFromFile(new SorcererCombatBehavior()));
+                }
                 if (heroClass == "w") {
                     playerParty.addPartyMember(Hero.createRandomHeroFromFile(new WarriorCombatBehavior()));
                 } else if (heroClass == "p") {
@@ -62,7 +69,7 @@ public class MonstersAndHeroes implements Playable {
 
             do {
                 playerParty.initPartyCoordinates(size, size);
-            } while (board.getGrid(playerParty.getHeroPartyRow(), playerParty.getHeroPartyCol()).getType() == Settings.INACCESSIBLE);
+            } while (board.getGrid(playerParty.getPartyCoordinate(0).getRow(), playerParty.getPartyCoordinate(0).getCol()).getType() == Settings.INACCESSIBLE);
         }
     }
 
@@ -78,16 +85,18 @@ public class MonstersAndHeroes implements Playable {
                     if (action.equals("w") || action.equals("a") || action.equals("s") || action.equals("d")) {
                         valid = movePlayer(action);
                         if (valid) {
-                            int currR = playerParty.getHeroPartyRow();
-                            int currC = playerParty.getHeroPartyCol();
+                            Coordinate coord = playerParty.getPartyCoordinate(0);
+                            int currR = coord.getRow();
+                            int currC = coord.getCol();
                             board.getGrid(currR, currC).getSpace().enter(playerParty);
                         }
                     } else if (action.equals("i")) {
                         valid = true;
                         playerParty.displayPartyInformation();
                     } else if (action.equals("m")) {
-                        int currR = playerParty.getHeroPartyRow();
-                        int currC = playerParty.getHeroPartyCol();
+                        Coordinate coord = playerParty.getPartyCoordinate(0);
+                        int currR = coord.getRow();
+                        int currC = coord.getCol();
                         board.getGrid(currR, currC).getSpace().interact(playerParty);
                         valid = true;
                     } else if (action.equals("e")) {
@@ -106,8 +115,9 @@ public class MonstersAndHeroes implements Playable {
         dir.put("a", new int[]{0, -1});
         dir.put("d", new int[]{0, 1});
         int[] d = dir.get(movement);
-        int currR = playerParty.getHeroPartyRow();
-        int currC = playerParty.getHeroPartyCol();
+        Coordinate coord = playerParty.getPartyCoordinate(0);
+        int currR = coord.getRow();
+        int currC = coord.getCol();
         int newR = currR + d[0];
         int newC = currC + d[1];
         if (newR < 0 || newC < 0 || newR >= board.getRows() || newC >= board.getCols()) {
@@ -115,8 +125,10 @@ public class MonstersAndHeroes implements Playable {
         } else if (board.getGrid(newR, newC).getType() == INACCESSIBLE) {
             System.out.println("This space is inaccessible!");
         } else {
-            playerParty.setHeroPartyRow(newR);
-            playerParty.setHeroPartyCol(newC);
+            Coordinate newCoord = new Coordinate(newR, newC);
+            for (int i = 0; i < playerParty.size(); i++) {
+                playerParty.setPartyCoordinate(i, newCoord);
+            }
             return true;
         }
         return false;
@@ -127,8 +139,9 @@ public class MonstersAndHeroes implements Playable {
         
         int rows = board.getRows();
         int cols = board.getCols();
-        int playerRow = playerParty.getHeroPartyRow();
-        int playerCol = playerParty.getHeroPartyCol();
+        Coordinate coord = playerParty.getPartyCoordinate(0);
+        int playerRow = coord.getRow();
+        int playerCol = coord.getCol();
 
         for (int i = 0; i < rows; i++) {
             System.out.print("+");
@@ -160,8 +173,9 @@ public class MonstersAndHeroes implements Playable {
 
     private void printPartySpace() {
         System.out.print("You are currently standing on a ");
-        int r = playerParty.getHeroPartyRow();
-        int c = playerParty.getHeroPartyCol();
+        Coordinate coord = playerParty.getPartyCoordinate(0);
+        int r = coord.getRow();
+        int c = coord.getCol();
         int spaceType = board.getGrid(r, c).getType();
         if (spaceType == Settings.COMMON) {
             System.out.print("COMMON");

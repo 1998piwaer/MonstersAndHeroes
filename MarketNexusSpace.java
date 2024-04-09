@@ -11,18 +11,26 @@
   */
 
 import java.util.*;
-public class MarketSpace implements Space {
+public class MarketNexusSpace implements MaHSpace, LoVSpace {
     private Market market;
     private Input input = Input.getSingletonInput();
+    private Entity entity;
 
-    public MarketSpace() {
+    
+    public MarketNexusSpace() {
         market = new Market();
     }
+
+    public void setOwnership(Entity e) {
+        entity = e;
+    }
+
+    
     public void enter(HeroParty heroParty) {
         // Nothing happens as it's a safe space.
     }
     public void interact(HeroParty heroParty) {
-        List<Hero> heroList = heroParty.getHeroParty();
+        List<Hero> heroList = heroParty.getParty();
         
         Set<String> hs = new HashSet<>();
         hs.add("e");
@@ -89,5 +97,13 @@ public class MarketSpace implements Space {
 
     public int getSpaceType() {
         return Settings.MARKET;
+    }
+
+    public void enter(Entity e) {
+        e.setSpaceCombatBehavior(new PlainCombatBehavior());
+    }
+
+    public void interact(Entity e) {
+        
     }
 }

@@ -20,7 +20,6 @@ public class WarriorCombatBehavior implements CombatBehavior {
         return dmg;
     }
 
-    // TODO: Implement armor (should take it in)
     public int tank(int dmg, int defense, double dodgeChace) {
         double roll = Math.random();
         if (roll < dodgeChace * Settings.AFFINITY_MULTIPLIER) {

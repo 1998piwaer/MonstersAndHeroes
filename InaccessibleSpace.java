@@ -9,17 +9,25 @@
   * have any of the methods called as a hero should not be able to enter in the first place.
   */
 
-public class InaccessibleSpace implements Space {
+public class InaccessibleSpace implements MaHSpace, LoVSpace {
     public void enter(HeroParty heroParty) {
         //This should never be entered (Debug print added just in case)
         System.out.println("[Debug]: This is inaccessible!");
     }
 
     public void interact(HeroParty heroParty) {
-        System.out.println("There is no market here!");
+        System.out.println("[Debug]: This is inaccessible!");
     }
 
     public int getSpaceType() {
-        return Settings.INACCESSIBLE;
+        return Settings.INACCESSIBLE_SPACE_TYPE;
+    }
+
+    public void enter(Entity entity) {
+        System.out.println("[Debug]: This is inaccessible!");
+    }
+
+    public void interact(Entity entity) {
+        System.out.println("[Debug]: This is inaccessible!");
     }
 }

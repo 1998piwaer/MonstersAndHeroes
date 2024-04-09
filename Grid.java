@@ -7,7 +7,7 @@
   * This includes what type of space it is and how to print it.
   */
 
-public interface GridInterface {
+public interface Grid {
     int getType();
     void printGrid();
     Space getSpace();

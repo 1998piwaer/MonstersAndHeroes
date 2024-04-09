@@ -11,12 +11,29 @@
 
 import java.util.*;
 
-public class MonsterParty {
-    List<Monster> party;
-    Input input = Input.getSingletonInput();
+public class MonsterParty implements PartyInterface {
+    private List<Monster> party;
+    private Input input = Input.getSingletonInput();
+    private Map<Monster, Coordinate> monsterCoordinates;
+
+    public Coordinate getPartyCoordinate(int index) {
+        return monsterCoordinates.get(party.get(index));
+    }
+
+    public void setPartyCoordinate(int index, Coordinate coord) {
+        monsterCoordinates.put(party.get(index), coord);
+    }
+
+    public List<Monster> getParty() {
+        return party;
+    }
+
+    // Monsters And Heroes
+
 
     public MonsterParty(int size, int level) {
         party = new ArrayList<>();
+        monsterCoordinates = new HashMap<>();
         for (int i = 0; i < size; i++) {
             double roll = Math.random();
             if (roll < Settings.SPIRIT_CHANCE) {
@@ -35,7 +52,7 @@ public class MonsterParty {
             Monster currentMonster = party.get(i);
             System.out.println("----------------------");
             System.out.println("Monster " + i + " information:");
-            System.out.println("Name: " + currentMonster.getCombatBehavior().getType() + " " 
+            System.out.println("Name: " + currentMonster.getClassCombatBehavior().getType() + " " 
                     + currentMonster.getName() + " (Lvl " + currentMonster.getLevel() + ")");
             System.out.println("HP: " + currentMonster.getHealth());
             System.out.println("Damage: " + currentMonster.getAttackDamage() + "; Defense: "
@@ -64,4 +81,6 @@ public class MonsterParty {
     public int size() {
         return party.size();
     }
+
+   
 }
