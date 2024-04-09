@@ -128,7 +128,6 @@ public class LegendsOfValor implements Playable {
 
     public void playGame() {
         while(!input.isQuit()) {
-            visualize();
             for (int i = 0; i < playerParty.size(); i++) {
                 visualize();
                 System.out.println("Hero " + i + "'s Turn!");
@@ -136,8 +135,8 @@ public class LegendsOfValor implements Playable {
                 boolean valid = false;
                 do {
                     String action = getNoncombatInput();
-                    if (action.equals("w") || action.equals("a") || action.equals("s") || action.equals("d")) {
-                        valid = movePlayer(i, action);
+                    if (action.equals("w") || action.equals("a") || action.equals("s") || action.equals("d") || action.equals("t")) {
+                        valid = moveEntity(i, action, playerParty);
                         if (valid) {
                             Coordinate coord = playerParty.getPartyCoordinate(i);
                             int currR = coord.getRow();
@@ -146,6 +145,9 @@ public class LegendsOfValor implements Playable {
                         }
                     }
                 } while (!valid);
+            }
+            for (int i = 0; i < monsterParty.size(); i++) {
+                moveEntity(i, "s", monsterParty);
             }
         }
     }
@@ -156,35 +158,46 @@ public class LegendsOfValor implements Playable {
         hs.add("a");
         hs.add("s");
         hs.add("d");
-        hs.add("q");
-        hs.add("i");
-        hs.add("m");
-        hs.add("e");
+        hs.add("t");
         String s = input.getString(hs);
         return s;
     }
 
-    private boolean movePlayer(int i, String movement) {
-        Map<String, int[]> dir = new HashMap<>();
-        dir.put("w", new int[]{-1, 0});
-        dir.put("s", new int[]{1, 0});
-        dir.put("a", new int[]{0, -1});
-        dir.put("d", new int[]{0, 1});
-        int[] d = dir.get(movement);
-        Coordinate coord = playerParty.getPartyCoordinate(i);
-        int currR = coord.getRow();
-        int currC = coord.getCol();
-        int newR = currR + d[0];
-        int newC = currC + d[1];
-        if (newR < 0 || newC < 0 || newR >= board.getRows() || newC >= board.getCols()) {
-            System.out.println("This moves you out of bounds!");
-        } else if (board.getGrid(newR, newC).getType() == Settings.INACCESSIBLE_SPACE_TYPE) {
-            System.out.println("This space is inaccessible!");
+    private boolean moveEntity(int index, String movement, PartyInterface party) {
+        if (!movement.equals("t")) {
+            Map<String, int[]> dir = new HashMap<>();
+            dir.put("w", new int[]{-1, 0});
+            dir.put("s", new int[]{1, 0});
+            dir.put("a", new int[]{0, -1});
+            dir.put("d", new int[]{0, 1});
+            int[] d = dir.get(movement);
+            Coordinate coord = party.getPartyCoordinate(index);
+            int currR = coord.getRow();
+            int currC = coord.getCol();
+            int newR = currR + d[0];
+            int newC = currC + d[1];
+            if (newR < 0 || newC < 0 || newR >= board.getRows() || newC >= board.getCols()) {
+                System.out.println("This moves you out of bounds!");
+            } else if (board.getGrid(newR, newC).getType() == Settings.INACCESSIBLE_SPACE_TYPE) {
+                System.out.println("This space is inaccessible!");
+            } else {
+                Coordinate newCoord = new Coordinate(newR, newC);
+                party.setPartyCoordinate(index, newCoord);
+                return true;
+            }
+            return false;
         } else {
-            Coordinate newCoord = new Coordinate(newR, newC);
-            playerParty.setPartyCoordinate(i, newCoord);
+            Set<Integer> availableHeroes = new HashSet<>();
+            for (int i = 0; i < Settings.DEFAULT_LEGENDS_OF_VALOR_SIZE; i++) {
+                if (i != index) {
+                    availableHeroes.add(i);
+                }
+            }
+            System.out.println("Which hero would you like to teleport to? " + availableHeroes.toString());
+            int tpTargetHero = input.getInt(availableHeroes);
             return true;
         }
-        return false;
     }
+
+
 }
