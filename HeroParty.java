@@ -140,43 +140,42 @@ public class HeroParty implements PartyInterface {
         }
     }
 
-    public void equipOrUse() {
-        for (Hero h: party) {
-            if (!h.displayInventory()) {
-                continue;
+    public void equipOrUse(Hero h) {
+        if (!h.displayInventory()) {
+            return;
+        }
+        System.out.println("Which item would you like to equip? Or none [-1]");
+        List<Item> inventory = h.getInventory();
+        int userInput = input.getInt(-1, inventory.size() - 1);
+        if (userInput == -1) {
+            return;
+        }
+        
+        Item selectedItem = inventory.get(userInput);
+        if (selectedItem instanceof Spell) {
+            System.out.println("You can't equip a spell!");
+        } else if (selectedItem instanceof Armor) {
+            boolean equipSuccess = h.useOrEquipItem((Armor) selectedItem);
+            if (equipSuccess) {
+                System.out.println("Successfully equipped armor " + selectedItem.getName());
             }
-            System.out.println("Which item would you like to equip? Or none [-1]");
-            List<Item> inventory = h.getInventory();
-            int userInput = input.getInt(-1, inventory.size() - 1);
-            if (userInput == -1) {
-                continue;
+        } else if (selectedItem instanceof Weapon) {
+            boolean equipSuccess = h.useOrEquipItem((Weapon) selectedItem);
+            if (equipSuccess) {
+                System.out.println("Successfully equipped weapon " + selectedItem.getName());
+            }
+        } else if (selectedItem instanceof Potion) {
+            Potion selectedPotion = (Potion) selectedItem;
+            if (h.useOrEquipItem(selectedPotion)) {
+                System.out.println("Hero " + h.getName() + " used " + selectedPotion.getName()
+                + " and increased " + selectedPotion.getAffectedAttributes() + " by " 
+                + selectedPotion.getAttributeIncrease());
             }
             
-            Item selectedItem = inventory.get(userInput);
-            if (selectedItem instanceof Spell) {
-                System.out.println("You can't equip a spell!");
-            } else if (selectedItem instanceof Armor) {
-                boolean equipSuccess = h.useOrEquipItem((Armor) selectedItem);
-                if (equipSuccess) {
-                    System.out.println("Successfully equipped armor " + selectedItem.getName());
-                }
-            } else if (selectedItem instanceof Weapon) {
-                boolean equipSuccess = h.useOrEquipItem((Weapon) selectedItem);
-                if (equipSuccess) {
-                    System.out.println("Successfully equipped weapon " + selectedItem.getName());
-                }
-            } else if (selectedItem instanceof Potion) {
-                Potion selectedPotion = (Potion) selectedItem;
-                if (h.useOrEquipItem(selectedPotion)) {
-                    System.out.println("Hero " + h.getName() + " used " + selectedPotion.getName()
-                    + " and increased " + selectedPotion.getAffectedAttributes() + " by " 
-                    + selectedPotion.getAttributeIncrease());
-                }
-                
-            } else {
-                System.out.println("[Debug]: No case specified for this item type!");
-            }
+        } else {
+            System.out.println("[Debug]: No case specified for this item type!");
         }
+        
         System.out.println("Input any key to continue");
         input.getString();
     

@@ -32,9 +32,11 @@ public class LegendsOfValor implements Playable {
         } else {
             board = new LoVBoard();
 
-            //Using composite pattern was considered but the list of hero parties of size 1 would mean that attributes such as their coordinates do not apply to the parent layer and by itself doesn't hold up as a independent playerParty. I therefore decided using 
+            // Using composite pattern was considered but the list of hero parties of size 1 
+            // would mean that attributes such as their coordinates do not apply to the parent 
+            // layer and by itself doesn't hold up as a independent playerParty.
+            // I therefore decided using composite pattern was not appropriate.
             playerParty = new HeroParty();
-
             monsterParty = new MonsterParty(Settings.DEFAULT_LOV_PARTY_SIZE, 1);
 
             Set<String> hs = new HashSet<>();
@@ -124,11 +126,11 @@ public class LegendsOfValor implements Playable {
     public void playGame() {
         while(!input.isQuit()) {
             for (int i = 0; i < playerParty.size(); i++) {
-                visualize();
-                System.out.println("Hero " + i + "'s Turn!");
-                System.out.println("Up [W], Left [A], Down [S], Right [D], Teleport [T], Recall [R], Enter Market/Nexus [M]");
                 boolean valid = false;
-                do {
+                while (!valid) {
+                    visualize();
+                    System.out.println("Hero " + i + "'s Turn!");
+                    System.out.println("Up [W], Left [A], Down [S], Right [D], Teleport [T], Recall [R], Enter Market/Nexus [M], Equip/Use [E], See Party Information [I]");
                     Coordinate currCoord = playerParty.getPartyCoordinate(i);
                     String action = getNoncombatInput();
                     if (action.equals("w") || action.equals("a") || action.equals("s") || action.equals("d") || action.equals("t")) {
@@ -145,12 +147,15 @@ public class LegendsOfValor implements Playable {
                         } else if (board.getHerosNexusCoordinates(i).contains(playerParty.getPartyCoordinate(i))) {
                             board.getGrid(currCoord.getRow(), currCoord.getCol()).getSpace().interact(playerParty.get(i));
                             System.out.println("Entered Nexus!");
-                            valid = true;
                         } else {
                             System.out.println("You can only enter your own nexus!");
                         }
+                    } else if (action.equals("e")) {
+                        playerParty.equipOrUse(playerParty.get(i));
+                    } else if (action.equals("i")) {
+                        playerParty.displayPartyInformation();
                     }
-                } while (!valid);
+                }
             }
             for (int i = 0; i < monsterParty.size(); i++) {
                 moveEntity(i, "s", monsterParty, playerParty);
@@ -166,6 +171,8 @@ public class LegendsOfValor implements Playable {
         hs.add("d");
         hs.add("t");
         hs.add("m");
+        hs.add("e");
+        hs.add("i");
         String s = input.getString(hs);
         return s;
     }
@@ -220,7 +227,7 @@ public class LegendsOfValor implements Playable {
             teleport(index, tpTargetHero, validCoordinates, targetHeroCoord);
 
             return true;
-        // Written by Huojie
+        // Written by Houjie
         } else if (movement.equals("r")) {
             /*
             Coordinate nexusCoord = playerParty.getPartyCoordinate(index);

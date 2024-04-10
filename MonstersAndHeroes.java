@@ -100,7 +100,10 @@ public class MonstersAndHeroes implements Playable {
                         board.getGrid(currR, currC).getSpace().interact(playerParty);
                         valid = true;
                     } else if (action.equals("e")) {
-                        playerParty.equipOrUse();
+                        for (Hero h : playerParty.getParty()) {
+                            playerParty.equipOrUse(h);
+                        }
+                        
                         valid = true;
                     }
                 } while (!valid);
