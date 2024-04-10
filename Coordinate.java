@@ -42,4 +42,20 @@ public class Coordinate {
     public void setCol(int c) {
         col = c;
     }
+
+    public static boolean checkIfAdjacent(Coordinate coord1, Coordinate coord2) {
+        if (Math.abs(coord1.getRow() - coord2.getRow()) > 1 || Math.abs(coord1.getCol() - coord2.getCol()) > 1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static boolean isInBounds(Coordinate coord, int rows, int cols) {
+        if (coord.getRow() < 0 || coord.getCol() < 0 || coord.getRow() >= rows || coord.getCol() >= cols) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
