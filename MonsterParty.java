@@ -28,6 +28,14 @@ public class MonsterParty implements PartyInterface {
         return party;
     }
 
+    public Set<Coordinate> getAllCoordinates() {
+        Set<Coordinate> hs = new HashSet<>();
+        for (Monster m : party) {
+            hs.add(monsterCoordinates.get(m));
+        }
+        return hs;
+    }
+
     // Monsters And Heroes
 
 
@@ -82,5 +90,5 @@ public class MonsterParty implements PartyInterface {
         return party.size();
     }
 
-   
+    
 }

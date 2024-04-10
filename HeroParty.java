@@ -42,6 +42,14 @@ public class HeroParty implements PartyInterface {
         }
     }
 
+    public Set<Coordinate> getAllCoordinates() {
+        Set<Coordinate> hs = new HashSet<>();
+        for (Hero h : party) {
+            hs.add(heroCoordinates.get(h));
+        }
+        return hs;
+    }
+
     
     // ----- Monsters And Heroes -----
     public void displayPartyInformation() {

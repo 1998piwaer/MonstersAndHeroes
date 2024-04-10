@@ -130,12 +130,12 @@ public class LegendsOfValor implements Playable {
             for (int i = 0; i < playerParty.size(); i++) {
                 visualize();
                 System.out.println("Hero " + i + "'s Turn!");
-                System.out.println("Up [W], Left [A], Down [S], Right [D]");
+                System.out.println("Up [W], Left [A], Down [S], Right [D], Teleport [T]");
                 boolean valid = false;
                 do {
                     String action = getNoncombatInput();
                     if (action.equals("w") || action.equals("a") || action.equals("s") || action.equals("d") || action.equals("t")) {
-                        valid = moveEntity(i, action, playerParty);
+                        valid = moveEntity(i, action, playerParty, monsterParty);
                         if (valid) {
                             Coordinate coord = playerParty.getPartyCoordinate(i);
                             int currR = coord.getRow();
@@ -146,7 +146,7 @@ public class LegendsOfValor implements Playable {
                 } while (!valid);
             }
             for (int i = 0; i < monsterParty.size(); i++) {
-                moveEntity(i, "s", monsterParty);
+                moveEntity(i, "s", monsterParty, playerParty);
             }
         }
     }
@@ -162,7 +162,7 @@ public class LegendsOfValor implements Playable {
         return s;
     }
 
-    private boolean moveEntity(int index, String movement, PartyInterface party) {
+    private boolean moveEntity(int index, String movement, PartyInterface party, PartyInterface opponentParty) {
         Coordinate currCoord = party.getPartyCoordinate(index);
         if (!movement.equals("t") && !movement.equals("r")) {
             Map<String, int[]> dir = new HashMap<>();
@@ -176,12 +176,18 @@ public class LegendsOfValor implements Playable {
             int currC = currCoord.getCol();
             int newR = currR + d[0];
             int newC = currC + d[1];
+            Coordinate newCoord = new Coordinate(newR, newC);
             if (newR < 0 || newC < 0 || newR >= board.getRows() || newC >= board.getCols()) {
                 System.out.println("This moves you out of bounds!");
             } else if (board.getGrid(newR, newC).getType() == Settings.INACCESSIBLE_SPACE_TYPE) {
                 System.out.println("This space is inaccessible!");
+            } else if (!moveCheck(index, newCoord, party, opponentParty)) {
+                if (party instanceof HeroParty) {
+                    System.out.println("There is a monster blocking your path!");
+                } else if (party instanceof MonsterParty) {
+                    System.out.println("[DEBUG]: Monster now attacks the hero!");
+                }
             } else {
-                Coordinate newCoord = new Coordinate(newR, newC);
                 party.setPartyCoordinate(index, newCoord);
                 return true;
             }
@@ -203,7 +209,7 @@ public class LegendsOfValor implements Playable {
             }
 
             Set<Coordinate> validCoordinates = getValidTeleportPositions(targetHeroCoord);
-            teleport(index, validCoordinates, targetHeroCoord);
+            teleport(index, tpTargetHero, validCoordinates, targetHeroCoord);
 
             return true;
         // Written by Huojie
@@ -230,11 +236,32 @@ public class LegendsOfValor implements Playable {
         }
     }
 
-    private void teleport (int heroIndex, Set<Coordinate> validNeighbor, Coordinate centerCoord) {
+    private <T extends PartyInterface> boolean moveCheck(int index, Coordinate newCoord, T selectedParty, T opponentParty) {
+        Coordinate currCoord = selectedParty.getPartyCoordinate(index);
+        Set<Coordinate> partyCoordinates = opponentParty.getAllCoordinates();
+        boolean moveDeeper = false;
+
+        // If hero or monster is moving closer to their opponent's nexus
+        if (selectedParty instanceof HeroParty && currCoord.getRow() - newCoord.getRow() > 0) {
+            moveDeeper = true;
+        } else if (selectedParty instanceof MonsterParty && currCoord.getRow() - newCoord.getRow() < 0) {
+            moveDeeper = true;
+        }
+        
+        for (Coordinate opponentCoord : partyCoordinates) {
+            // if opponent and entity is in same row and they're attempting to move deeper, return false
+            if (currCoord.getRow() == opponentCoord.getRow() && moveDeeper) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void teleport (int heroIndex, int targetHeroIndex, Set<Coordinate> validNeighbor, Coordinate centerCoord) {
         int counter = 0;
         int[][] dir = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 0}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
         Map<Integer, Coordinate> hm = new HashMap<>();
-        System.out.println("Which spot would you like to teleport to?");
+        
         for (int i = 0; i < dir.length; i++) {
             Coordinate adjCoord = new Coordinate(centerCoord.getRow() + dir[i][0], centerCoord.getCol() + dir[i][1]);
             if (!Coordinate.isInBounds(adjCoord, board.getRows(), board.getCols())) {
@@ -244,17 +271,17 @@ public class LegendsOfValor implements Playable {
                 hm.put(counter, adjCoord);
                 System.out.print("|");
                 System.out.print(counter++);
-                System.out.print("|");
-                counter++;
-            } else if (centerCoord == adjCoord) {
-                System.out.print("|");
-                System.out.print("X");
-                System.out.print("|");
+                System.out.print(" |");
+            } else if (centerCoord.equals(adjCoord)) {
+                System.out.print("|H" + targetHeroIndex + "|");
+            } else {
+                System.out.print("|X |");
             }
             if (i % 3 == 2) {
                 System.out.println();
             }
         }
+        System.out.println("Which spot would you like to teleport to? " + hm.keySet().toString());
         int location = input.getInt(hm.keySet());
         playerParty.setPartyCoordinate(heroIndex, hm.get(location));
     }
