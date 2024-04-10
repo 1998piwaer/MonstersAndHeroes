@@ -17,15 +17,13 @@ public class LegendsOfValor implements Playable {
             monsterParty = new MonsterParty(Settings.DEFAULT_LOV_PARTY_SIZE, 1);
             board = new LoVBoard();
             for (int i = 0; i < Settings.DEFAULT_LOV_PARTY_SIZE; i++) {
+                board.setHerosNexusCoordinates(i, i);
                 for (int j = 0; j < 2; j++) {
                     int r = board.getRows() - 1;
                     board.getGrid(r, i * 3 + j).getSpace();
-                    MarketNexusSpace nexusSpace = (MarketNexusSpace) board.getGrid(r, i * 3 + j).getSpace();
-                    nexusSpace.setOwnership(playerParty.get(i));
                     Coordinate coord = new Coordinate(r, i * 3 + j);
                     playerParty.setPartyCoordinate(i, coord);
                     r = 0;
-                    nexusSpace = (MarketNexusSpace) board.getGrid(r, i * 3 + j).getSpace();
                     coord = new Coordinate(r, i * 3 + j);
                     monsterParty.setPartyCoordinate(i, coord);
                 }
@@ -67,15 +65,13 @@ public class LegendsOfValor implements Playable {
                 System.out.println("Which lane do you want this hero to belong to? " + availableLanes.toString());
                 int heroLane = input.getInt(availableLanes);
                 availableLanes.remove(heroLane);
+                board.setHerosNexusCoordinates(i, heroLane);
                 for (int j = 0; j < 2; j++) {
                     int r = board.getRows() - 1;
                     board.getGrid(r, heroLane * 3 + j).getSpace();
-                    MarketNexusSpace nexusSpace = (MarketNexusSpace) board.getGrid(r, heroLane * 3 + j).getSpace();
-                    nexusSpace.setOwnership(hero);
                     Coordinate coord = new Coordinate(r, heroLane * 3 + j);
                     playerParty.setPartyCoordinate(i, coord);
                     r = 0;
-                    nexusSpace = (MarketNexusSpace) board.getGrid(r, heroLane * 3 + j).getSpace();
                     coord = new Coordinate(r, heroLane * 3 + j);
                     monsterParty.setPartyCoordinate(i, coord);
                 }
@@ -130,9 +126,10 @@ public class LegendsOfValor implements Playable {
             for (int i = 0; i < playerParty.size(); i++) {
                 visualize();
                 System.out.println("Hero " + i + "'s Turn!");
-                System.out.println("Up [W], Left [A], Down [S], Right [D], Teleport [T]");
+                System.out.println("Up [W], Left [A], Down [S], Right [D], Teleport [T], Recall [R], Enter Market/Nexus [M]");
                 boolean valid = false;
                 do {
+                    Coordinate currCoord = playerParty.getPartyCoordinate(i);
                     String action = getNoncombatInput();
                     if (action.equals("w") || action.equals("a") || action.equals("s") || action.equals("d") || action.equals("t")) {
                         valid = moveEntity(i, action, playerParty, monsterParty);
@@ -141,6 +138,16 @@ public class LegendsOfValor implements Playable {
                             int currR = coord.getRow();
                             int currC = coord.getCol();
                             board.getGrid(currR, currC).getSpace().enter(playerParty.get(i));
+                        }
+                    } else if (action.equals("m")) {
+                        if (currCoord.getRow() != board.getRows() - 1) {
+                            System.out.println("You're not standing on a nexus!");
+                        } else if (board.getHerosNexusCoordinates(i).contains(playerParty.getPartyCoordinate(i))) {
+                            board.getGrid(currCoord.getRow(), currCoord.getCol()).getSpace().interact(playerParty.get(i));
+                            System.out.println("Entered Nexus!");
+                            valid = true;
+                        } else {
+                            System.out.println("You can only enter your own nexus!");
                         }
                     }
                 } while (!valid);
@@ -158,6 +165,7 @@ public class LegendsOfValor implements Playable {
         hs.add("s");
         hs.add("d");
         hs.add("t");
+        hs.add("m");
         String s = input.getString(hs);
         return s;
     }
@@ -219,12 +227,11 @@ public class LegendsOfValor implements Playable {
             party.setPartyCoordinate(index, nexusCoord);
             return true;
             */
-           // Assuming lanes are indexed from 0 and each hero is assigned a lane
-           // Nexus for heroes is at the bottom row, which is board.getRows() - 1
-           // Assuming lanes are divided equally, calculate column based on hero's lane
-           // Assuming lanes in a round-robin fashion
-            for (int i = 0; i < playerParty.size(); i++)
-            {
+            // Assuming lanes are indexed from 0 and each hero is assigned a lane
+            // Nexus for heroes is at the bottom row, which is board.getRows() - 1
+            // Assuming lanes are divided equally, calculate column based on hero's lane
+            // Assuming lanes in a round-robin fashion
+            for (int i = 0; i < playerParty.size(); i++) {
                 int lane = i % Settings.NUM_LANES;
                 int baseCol = lane * (board.getCols() / Settings.NUM_LANES);
                 Coordinate nexusCoord = new Coordinate(board.getRows() - 1, baseCol);
@@ -241,7 +248,7 @@ public class LegendsOfValor implements Playable {
         Set<Coordinate> partyCoordinates = opponentParty.getAllCoordinates();
         boolean moveDeeper = false;
 
-        // If hero or monster is moving closer to their opponent's nexus
+        // If hero or monster is moving closer to their opponent (monster or hero respectively)'s nexus
         if (selectedParty instanceof HeroParty && currCoord.getRow() - newCoord.getRow() > 0) {
             moveDeeper = true;
         } else if (selectedParty instanceof MonsterParty && currCoord.getRow() - newCoord.getRow() < 0) {

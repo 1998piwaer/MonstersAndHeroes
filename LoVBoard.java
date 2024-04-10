@@ -2,11 +2,11 @@ import java.util.*;
 
 public class LoVBoard implements Board {
     private LoVGrid[][] board;
-    private Map<Integer, Coordinate> nexusCoordinates;
+    private Map<Integer, Set<Coordinate>> herosNexusCoordinates;
 
     public LoVBoard() {
         board = new LoVGrid[Settings.DEFAULT_LEGENDS_OF_VALOR_SIZE][Settings.DEFAULT_LEGENDS_OF_VALOR_SIZE];
-        nexusCoordinates = new HashMap<>();
+        herosNexusCoordinates = new HashMap<>();
         populateBoard();
     }
 
@@ -51,5 +51,16 @@ public class LoVBoard implements Board {
 
     public int getCols() {
         return board[0].length;
+    }
+
+    public void setHerosNexusCoordinates(int heroIndex, int lane) {
+        Set<Coordinate> hs = new HashSet<>();
+        hs.add(new Coordinate(board.length - 1, lane * 3));
+        hs.add(new Coordinate(board.length - 1, lane * 3 + 1));
+        herosNexusCoordinates.put(heroIndex, hs);
+    }
+
+    public Set<Coordinate> getHerosNexusCoordinates(int heroIndex) {
+        return herosNexusCoordinates.get(heroIndex);
     }
 }

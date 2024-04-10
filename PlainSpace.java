@@ -3,7 +3,7 @@ public class PlainSpace implements LoVSpace {
         e.setSpaceCombatBehavior(new PlainCombatBehavior());
     }
 
-    public void interact(Entity e) {
+    public void interact(Hero h) {
 
     }
 

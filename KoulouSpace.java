@@ -3,7 +3,7 @@ public class KoulouSpace implements LoVSpace {
         e.setSpaceCombatBehavior(new KoulouCombatBehavior());
     }
 
-    public void interact(Entity e) {
+    public void interact(Hero h) {
 
     }
 

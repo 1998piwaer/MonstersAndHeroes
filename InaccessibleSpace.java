@@ -27,7 +27,7 @@ public class InaccessibleSpace implements MaHSpace, LoVSpace {
         System.out.println("[Debug]: This is inaccessible!");
     }
 
-    public void interact(Entity entity) {
+    public void interact(Hero h) {
         System.out.println("[Debug]: This is inaccessible!");
     }
 }

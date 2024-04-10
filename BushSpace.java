@@ -3,7 +3,7 @@ public class BushSpace implements LoVSpace {
         e.setSpaceCombatBehavior(new BushCombatBehavior());
     }
 
-    public void interact(Entity e) {
+    public void interact(Hero h) {
 
     }
 

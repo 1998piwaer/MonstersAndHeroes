@@ -14,15 +14,9 @@ import java.util.*;
 public class MarketNexusSpace implements MaHSpace, LoVSpace {
     private Market market;
     private Input input = Input.getSingletonInput();
-    private Entity entity;
-
     
     public MarketNexusSpace() {
         market = new Market();
-    }
-
-    public void setOwnership(Entity e) {
-        entity = e;
     }
 
     
@@ -31,37 +25,8 @@ public class MarketNexusSpace implements MaHSpace, LoVSpace {
     }
     public void interact(HeroParty heroParty) {
         List<Hero> heroList = heroParty.getParty();
-        
-        Set<String> hs = new HashSet<>();
-        hs.add("e");
-        hs.add("b");
-        hs.add("s");
-        hs.add("n");
-        String userInput = "";
-        while (!userInput.equals("e")) {
-            for (Hero h: heroList) {
-                Settings.clearTerminal();
-                market.displayItems();
-                if (market.getCatalogSize() == 0) {
-                    System.out.println("The market is out of items!");
-                    System.out.println("Input any key to continue");
-                    input.getString();
-                    userInput = "e";
-                    break;
-                }
-                System.out.println("Will hero " + h.getName() + " (Gold: " + h.getGold() + ") like to buy [B], sell [S],"
-                + " move on to the next hero [N] or exit [E]?");
-                userInput = input.getString(hs);
-                if (userInput.equals("b")) {
-                    buy(h);
-                } else if (userInput.equals("s")) {
-                    sell(h);
-                } else if (userInput.equals("n")) {
-                    continue;
-                } else if (userInput.equals("e")){
-                    break;
-                }
-            }
+        for (Hero h: heroList) {
+            interact(h);
         }
     }
 
@@ -103,7 +68,34 @@ public class MarketNexusSpace implements MaHSpace, LoVSpace {
         e.setSpaceCombatBehavior(new PlainCombatBehavior());
     }
 
-    public void interact(Entity e) {
-        
+    public void interact(Hero h) {
+        Set<String> hs = new HashSet<>();
+        hs.add("e");
+        hs.add("b");
+        hs.add("s");
+        hs.add("n");
+        String userInput = "";
+        while (!userInput.equals("e")) {
+            market.displayItems();
+            if (market.getCatalogSize() == 0) {
+                System.out.println("The market is out of items!");
+                System.out.println("Input any key to continue");
+                input.getString();
+                userInput = "e";
+                break;
+            }
+            System.out.println("Will hero " + h.getName() + " (Gold: " + h.getGold() + ") like to buy [B], sell [S],"
+                    + " move on to the next hero [N] or exit [E]?");
+            userInput = input.getString(hs);
+            if (userInput.equals("b")) {
+                buy(h);
+            } else if (userInput.equals("s")) {
+                sell(h);
+            } else if (userInput.equals("n")) {
+                continue;
+            } else if (userInput.equals("e")){
+                break;
+            }
+        }
     }
 }

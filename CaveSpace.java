@@ -7,7 +7,7 @@ public class CaveSpace implements LoVSpace {
         e.setSpaceCombatBehavior(new CaveCombatBehavior());
     }
 
-    public void interact(Entity entity) {
+    public void interact(Hero h) {
 
     }
 }
