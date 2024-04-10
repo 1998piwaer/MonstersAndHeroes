@@ -5,7 +5,8 @@
 [X] Movement - Prevents both heroes and monsters from moving when adjacent to one another
 [ ] Ensure correct space combat behavior is being implemented when hero enters a space
 [X] Hero can enter their own Nexus and noone else's
-[ ] Hero can equip items
+[X] Hero can equip items
+[ ] Pressing [I] should also show monster's informations.
 [ ] Implement end game state if hero/monster reaches opposite ends
 [ ] Handle creating combat when player & monster are adjacent (and how to handle other heroes "joining" the fight)
 [ ] Create observer pattern for giving EXP to all heroes
