@@ -15,16 +15,25 @@ public class HeroParty implements PartyInterface {
     private List<Hero> party;
     private Input input = Input.getSingletonInput();
     private Map<Hero, Coordinate> heroCoordinates;
+    private boolean win;
 
     public HeroParty() {
         party = new ArrayList<>();
         heroCoordinates = new HashMap<>();
+        win = false;
     }
 
     public Hero get(int i) {
         return party.get(i);
     }
 
+    public boolean isWin() {
+        return win;
+    }
+
+    public void setWin(boolean win) {
+        this.win = win;
+    }
 
     public Coordinate getPartyCoordinate(int index) {
         return heroCoordinates.get(party.get(index));

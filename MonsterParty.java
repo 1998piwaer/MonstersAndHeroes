@@ -15,6 +15,7 @@ public class MonsterParty implements PartyInterface {
     private List<Monster> party;
     private Input input = Input.getSingletonInput();
     private Map<Monster, Coordinate> monsterCoordinates;
+    private boolean win;
 
     public Coordinate getPartyCoordinate(int index) {
         return monsterCoordinates.get(party.get(index));
@@ -26,6 +27,14 @@ public class MonsterParty implements PartyInterface {
 
     public List<Monster> getParty() {
         return party;
+    }
+
+    public boolean isWin() {
+        return win;
+    }
+
+    public void setWin(boolean win) {
+        this.win = win;
     }
 
     public Set<Coordinate> getAllCoordinates() {
@@ -52,10 +61,10 @@ public class MonsterParty implements PartyInterface {
                 party.add(Monster.createRandomMonsterFromFile(new DragonCombatBehavior()));
             }
         }
+        win = false;
     }
 
     public void displayPartyInformation() {
-        Settings.clearTerminal();
         for (int i = 0; i < party.size(); i++) {
             Monster currentMonster = party.get(i);
             System.out.println("----------------------");

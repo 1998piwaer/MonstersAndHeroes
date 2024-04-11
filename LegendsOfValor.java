@@ -5,8 +5,8 @@ public class LegendsOfValor implements Playable {
     private Input input = Input.getSingletonInput();
     private HeroParty playerParty;
     private MonsterParty monsterParty;
-    public void initalize() {
 
+    public void initalize() {
         System.out.println("Do you want to play with default settings? [T/F]");
         boolean defaultSettings = input.getBoolean();
         if (defaultSettings) {
@@ -27,13 +27,14 @@ public class LegendsOfValor implements Playable {
                     coord = new Coordinate(r, i * 3 + j);
                     monsterParty.setPartyCoordinate(i, coord);
                 }
-            } 
-            
+            }
+
         } else {
             board = new LoVBoard();
 
-            // Using composite pattern was considered but the list of hero parties of size 1 
-            // would mean that attributes such as their coordinates do not apply to the parent 
+            // Using composite pattern was considered but the list of hero parties of size 1
+            // would mean that attributes such as their coordinates do not apply to the
+            // parent
             // layer and by itself doesn't hold up as a independent playerParty.
             // I therefore decided using composite pattern was not appropriate.
             playerParty = new HeroParty();
@@ -124,28 +125,39 @@ public class LegendsOfValor implements Playable {
     }
 
     public void playGame() {
-        while(!input.isQuit()) {
+        while (!input.isQuit() && !playerParty.isWin() && !monsterParty.isWin()) {
             for (int i = 0; i < playerParty.size(); i++) {
                 boolean valid = false;
                 while (!valid) {
                     visualize();
                     System.out.println("Hero " + i + "'s Turn!");
-                    System.out.println("Up [W], Left [A], Down [S], Right [D], Teleport [T], Recall [R], Enter Market/Nexus [M], Equip/Use [E], See Party Information [I]");
+                    System.out.println(
+                            "Up [W], Left [A], Down [S], Right [D], Teleport [T], Recall [R], Enter Market/Nexus [M], Equip/Use [E], See Party Information [I]");
                     Coordinate currCoord = playerParty.getPartyCoordinate(i);
                     String action = getNoncombatInput();
-                    if (action.equals("w") || action.equals("a") || action.equals("s") || action.equals("d") || action.equals("t")) {
+                    if (action.equals("w") || action.equals("a") || action.equals("s") || action.equals("d")
+                            || action.equals("t")) {
                         valid = moveEntity(i, action, playerParty, monsterParty);
                         if (valid) {
                             Coordinate coord = playerParty.getPartyCoordinate(i);
                             int currR = coord.getRow();
                             int currC = coord.getCol();
                             board.getGrid(currR, currC).getSpace().enter(playerParty.get(i));
+
+                            // judge if the hero is in the nexus of monster
+                            if (coord.getRow() == 0) {
+                                // should set game status to win
+                                playerParty.setWin(true);
+                                System.out.println("Hero " + i + " has entered the monster's nexus!");
+                                break;
+                            }
                         }
                     } else if (action.equals("m")) {
                         if (currCoord.getRow() != board.getRows() - 1) {
                             System.out.println("You're not standing on a nexus!");
                         } else if (board.getHerosNexusCoordinates(i).contains(playerParty.getPartyCoordinate(i))) {
-                            board.getGrid(currCoord.getRow(), currCoord.getCol()).getSpace().interact(playerParty.get(i));
+                            board.getGrid(currCoord.getRow(), currCoord.getCol()).getSpace()
+                                    .interact(playerParty.get(i));
                             System.out.println("Entered Nexus!");
                         } else {
                             System.out.println("You can only enter your own nexus!");
@@ -154,12 +166,26 @@ public class LegendsOfValor implements Playable {
                         playerParty.equipOrUse(playerParty.get(i));
                     } else if (action.equals("i")) {
                         playerParty.displayPartyInformation();
+                        monsterParty.displayPartyInformation();
                     }
                 }
             }
             for (int i = 0; i < monsterParty.size(); i++) {
                 moveEntity(i, "s", monsterParty, playerParty);
+                if (monsterParty.getPartyCoordinate(i).getRow() == board.getRows() - 1) {
+                    // should set game status to win
+                    monsterParty.setWin(true);
+                    System.out.println("Monster " + i + " has entered the hero's nexus!");
+                    break;
+                }
             }
+        }
+
+        // show win status
+        if (playerParty.isWin()) {
+            System.out.println("Congratulations! You have won!");
+        } else if (monsterParty.isWin()) {
+            System.out.println("You have lost!");
         }
     }
 
@@ -181,12 +207,12 @@ public class LegendsOfValor implements Playable {
         Coordinate currCoord = party.getPartyCoordinate(index);
         if (!movement.equals("t") && !movement.equals("r")) {
             Map<String, int[]> dir = new HashMap<>();
-            dir.put("w", new int[]{-1, 0});
-            dir.put("s", new int[]{1, 0});
-            dir.put("a", new int[]{0, -1});
-            dir.put("d", new int[]{0, 1});
+            dir.put("w", new int[] { -1, 0 });
+            dir.put("s", new int[] { 1, 0 });
+            dir.put("a", new int[] { 0, -1 });
+            dir.put("d", new int[] { 0, 1 });
             int[] d = dir.get(movement);
-            
+
             int currR = currCoord.getRow();
             int currC = currCoord.getCol();
             int newR = currR + d[0];
@@ -227,13 +253,13 @@ public class LegendsOfValor implements Playable {
             teleport(index, tpTargetHero, validCoordinates, targetHeroCoord);
 
             return true;
-        // Written by Houjie
+            // Written by Houjie
         } else if (movement.equals("r")) {
             /*
-            Coordinate nexusCoord = playerParty.getPartyCoordinate(index);
-            party.setPartyCoordinate(index, nexusCoord);
-            return true;
-            */
+             * Coordinate nexusCoord = playerParty.getPartyCoordinate(index);
+             * party.setPartyCoordinate(index, nexusCoord);
+             * return true;
+             */
             // Assuming lanes are indexed from 0 and each hero is assigned a lane
             // Nexus for heroes is at the bottom row, which is board.getRows() - 1
             // Assuming lanes are divided equally, calculate column based on hero's lane
@@ -250,20 +276,23 @@ public class LegendsOfValor implements Playable {
         }
     }
 
-    private <T extends PartyInterface> boolean moveCheck(int index, Coordinate newCoord, T selectedParty, T opponentParty) {
+    private <T extends PartyInterface> boolean moveCheck(int index, Coordinate newCoord, T selectedParty,
+            T opponentParty) {
         Coordinate currCoord = selectedParty.getPartyCoordinate(index);
         Set<Coordinate> partyCoordinates = opponentParty.getAllCoordinates();
         boolean moveDeeper = false;
 
-        // If hero or monster is moving closer to their opponent (monster or hero respectively)'s nexus
+        // If hero or monster is moving closer to their opponent (monster or hero
+        // respectively)'s nexus
         if (selectedParty instanceof HeroParty && currCoord.getRow() - newCoord.getRow() > 0) {
             moveDeeper = true;
         } else if (selectedParty instanceof MonsterParty && currCoord.getRow() - newCoord.getRow() < 0) {
             moveDeeper = true;
         }
-        
+
         for (Coordinate opponentCoord : partyCoordinates) {
-            // if opponent and entity is in same row and they're attempting to move deeper, return false
+            // if opponent and entity is in same row and they're attempting to move deeper,
+            // return false
             if (currCoord.getRow() == opponentCoord.getRow() && moveDeeper) {
                 return false;
             }
@@ -271,11 +300,12 @@ public class LegendsOfValor implements Playable {
         return true;
     }
 
-    private void teleport (int heroIndex, int targetHeroIndex, Set<Coordinate> validNeighbor, Coordinate centerCoord) {
+    private void teleport(int heroIndex, int targetHeroIndex, Set<Coordinate> validNeighbor, Coordinate centerCoord) {
         int counter = 0;
-        int[][] dir = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 0}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+        int[][] dir = { { -1, -1 }, { -1, 0 }, { -1, 1 }, { 0, -1 }, { 0, 0 }, { 0, 1 }, { 1, -1 }, { 1, 0 },
+                { 1, 1 } };
         Map<Integer, Coordinate> hm = new HashMap<>();
-        
+
         for (int i = 0; i < dir.length; i++) {
             Coordinate adjCoord = new Coordinate(centerCoord.getRow() + dir[i][0], centerCoord.getCol() + dir[i][1]);
             if (!Coordinate.isInBounds(adjCoord, board.getRows(), board.getCols())) {
@@ -302,16 +332,16 @@ public class LegendsOfValor implements Playable {
 
     private Set<Coordinate> getValidTeleportPositions(Coordinate targetHeroCoord) {
         // Left, Down Left, Down, Down Right, Right
-        int[][] dir = {{0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}};
+        int[][] dir = { { 0, -1 }, { 1, -1 }, { 1, 0 }, { 1, 1 }, { 0, 1 } };
         int currR = targetHeroCoord.getRow();
         int currC = targetHeroCoord.getCol();
-        
+
         Set<Coordinate> validCoord = new HashSet<>();
         Set<Coordinate> heroOccupiedCoord = new HashSet<>();
         for (int i = 0; i < playerParty.size(); i++) {
             heroOccupiedCoord.add(playerParty.getPartyCoordinate(i));
         }
-        
+
         for (int[] d : dir) {
             int newR = currR + d[0];
             int newC = currC + d[1];
@@ -325,7 +355,7 @@ public class LegendsOfValor implements Playable {
                 }
             }
         }
-        
+
         return validCoord;
     }
 
